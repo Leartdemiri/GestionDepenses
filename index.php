@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.12/iconfont/material-icons.min.css">
-    <link rel="icon" type="image" href="/ressources/images/icon1.png">
+    <link rel="icon" type="image/png" href="./ressources/images/icon1.png">
+
 </head>
 
 <body>
@@ -61,7 +62,7 @@
                                         </div>
                                     </form>
 
-                                    <form class="card-back" action="signup/" method="POST">
+                                    <form id="card-back" action="signup/" method="POST">
                                         <div class="center-wrap">
                                             <h4 class="heading">Créer un compte</h4>
                                             <div class="form-group">

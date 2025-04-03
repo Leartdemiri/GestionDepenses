@@ -14,7 +14,11 @@ if($method !== "POST"){
     die();
 }
 
-if($_POST['email'])
+if(!isset($_POST['email'])){
+    http_response_code(HTTP_STATUS_BAD_REQUEST);
+    header("Location: ../index.php");
+    die();
+}
 
 
 // Récupérer les données du formulaire

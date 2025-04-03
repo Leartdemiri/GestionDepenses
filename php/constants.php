@@ -1,4 +1,9 @@
 <?php
+// database
+const DB_HOST   =     "localhost";
+const DB_NAME   =     "UB$";
+const DB_USER   =     "UBS_ADMIN";
+const DB_PASS   =     "SuperUBS";
 
 // website functionnality
 const CURRENCY_STRING_LENGTH = 3;
