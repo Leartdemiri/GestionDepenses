@@ -3,18 +3,17 @@
 require_once "../php/constants.php";
 require_once "../php/database.php";
 
-header("Access-Control-Allow-Origin: *");
-
 $method = $_SERVER['REQUEST_METHOD'];
 
-// Security 
+// Security -- Requete bien envoyée
 if($method !== "POST"){
     http_response_code(HTTP_STATUS_METHOD_NOT_ALLOWED);
     header("Location: ../index.php");
     die();
 }
 
-if(!isset($_POST['email'])){
+// Security -- Est-ce que on a recu les bonnes données?
+if(!isset($_POST['email']) ||!isset($_POST['password'])){
     http_response_code(HTTP_STATUS_BAD_REQUEST);
     header("Location: ../index.php");
     die();

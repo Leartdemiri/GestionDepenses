@@ -39,12 +39,12 @@
                 <div class="right">
                     <div class="form">
                         <div class="text-center">
-                            <h6><span>Connexion</span> <span>Création de compte</span></h6>
+                            <h6><span>Connexion</span> <span>Inscription</span></h6>
                             <input type="checkbox" class="checkbox" id="reg-log">
                             <label for="reg-log"></label>
                             <div class="card-3d-wrap">
                                 <div class="card-3d-wrapper">
-                                    <form class="card-front" action="login/" method="POST">
+                                    <form id="card-front" action="login/" method="POST">
                                         <div class="center-wrap">
                                             <h4 class="heading">Se connecter</h4>
                                             <div class="form-group">
@@ -64,7 +64,7 @@
 
                                     <form id="card-back" action="signup/" method="POST">
                                         <div class="center-wrap">
-                                            <h4 class="heading">Créer un compte</h4>
+                                            <h4 class="heading">S'inscrire</h4>
                                             <div class="form-group">
                                                 <input type="text" class="form-style" placeholder="Votre Prénom"
                                                     autocomplete="off">
