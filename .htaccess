@@ -3,3 +3,4 @@ RewriteEngine On
 RewriteRule login/ pages/login.php [QSA,L]
 RewriteRule signup/ pages/signup.php [QSA,L]
 RewriteRule inscription/ pages/inscription.php [QSA,L]
+RewriteRule home/ pages/accueil.php [QSA,L]

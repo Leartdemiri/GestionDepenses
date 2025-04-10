@@ -39,7 +39,7 @@ function readAllUsers()
     $sql = "SELECT idUser, email, Firstname, Lastname, Token, Password, currency FROM user";
     $params = [];
     $statement = DataBase::dbRun($sql, $params);
-    return $statement->fetch(PDO::FETCH_ASSOC);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
 /// Récupère toutes les données d'un seul utilisateur de la base de donnée
@@ -50,6 +50,15 @@ function readOneUserByID(int $id)
     $params = [":id" => $id];
     $statement = DataBase::dbRun($sql, $params);
     return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
+/// Est-ce que un utilisateur éxiste?
+/// <param> string $email <param> : Paramètre en STRING, email de l'utilisateur que l'ont veux récupérer
+function checkIfUserExist(string $email){
+    $sql = "SELECT idUser, Password, Token FROM user WHERE email = :email";
+    $param = [':email' => $email];
+    $statement = DataBase::dbRun($sql, $param);
+    return $statement->fetch(PDO::FETCH_ASSOC) ?? null;
 }
 
 ///
@@ -131,9 +140,9 @@ function createEconomy(string $monthlyInput, string $monthlyLimit, string $spend
             VALUES (:id, :minput, :mlimit, :spaim, :bmoney)";
     $params = [
         ":id" => $id,
-        ":minput" => $monthlyInput,
-        ":mlimit" => $monthlyLimit,
-        ":spaim" => $spendAim,
+        ":minput" => floatval($monthlyInput),
+        ":mlimit" => floatval($monthlyLimit),
+        ":spaim" => floatval($spendAim),
         ":bmoney" => $BaseMoney
     ];
     $statement = DataBase::dbRun($sql, $params);
@@ -171,9 +180,7 @@ function readOneEconomy(int $id)
 /// <param> int    $id              <param>
 function updateEconomy(string $monthlyInput, string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
 {
-    $sql = "UPDATE economy 
-            SET monthlyInput = :minput, monthlyLimit = :mlimit, spendAim = :spaim, BaseMoney = :bmoney 
-            WHERE idUser = :id";
+    $sql = "UPDATE economy SET monthlyInput = :minput, monthlyLimit = :mlimit, spendAim = :spaim, BaseMoney = :bmoney WHERE idUser = :id";
     $params = [
         ":id" => $id,
         ":minput" => $monthlyInput,
@@ -203,24 +210,127 @@ function deleteEconomy(int $id)
 /* ======================================================================================================================================================================*/
 
 ///
-/// Créer une économie dédiée a un utilisateur
-/// <param> string $email       <param> : Paramètre en STRING, Email de l'utilisateur
-/// <param> string $firstname   <param> : Paramètre en STRING, Prénom de l'utilisateur
-/// <param> string $lastname    <param> : Paramètre en STRING, Nom de famille de l'utilisateur
-/// <param> string $token       <param> : Paramètre en STRING, Le token de de l'utilisateur qui permet de savoir qui est si on est connecté
-/// <param> string $password    <param> : Paramètre en STRING, Mot de pass de l'utilisateur ( préférablement hashé en BCrypt)
-/// <param> string $currency    <param> : Paramètre en STRING, Currency utilisé et préférée de l'utilisateur
-function createSpending(int $monthlyInput, int $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
+/// Créer une dépense dans l'économie de l'utilisateur
+/// <param> int $idEconomy          <param> : Paramètre en INT, ID de l'économie de l'utilisateur
+/// <param> int $idSpendType        <param> : Paramètre en INT, ID du type de dépense (bouffe, loisir etc.. )
+/// <param> string $amount          <param> : Paramètre en STRING, Combien on a dépensé
+function createSpending(int $idEconomy, int $idSpendType, string $amount)
 {
-    $sql = "INSERT INTO user (idUser, monthlyInput, monthlyLimit, spendAim, BaseMoney) VALUES (:id,:email, :fname, :lname, :token, :password, :currency)";
+    $sql = "INSERT INTO spending (idEconomy, idSpendType, amount) VALUES (:ide, :idst, :amo)";
     $params = [
-        ":id" => $id,
-        ":minput" => $monthlyInput,
-        ":mlimit" => $monthlyLimit,
-        ":spaim" => $spendAim,
-        ":bmoney" => $BaseMoney
-
+        ":ide" => $idEconomy,
+        ":idst" => $idSpendType,
+        ":amo" => $amount
     ];
     $statement = DataBase::dbRun($sql, $params);
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
+
+///
+/// Créer une dépense dans l'économie de l'utilisateur
+/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+function readOneSpending(int $idSpending)
+{
+    $sql = "SELECT idSpending, idEconomy, idSpendType, amount FROM spending WHERE idSpending = :ids";
+    $params = [
+        ":ids" => $idSpending
+    ];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
+///
+/// Créer une dépense dans l'économie de l'utilisateur
+/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+function readAllSpendingOfEconomy(int $idEconomy)
+{
+    $sql = "SELECT idSpending, idEconomy, idSpendType, amount FROM spending WHERE idEconomy = :ide";
+    $params = [
+        ":ide" => $idEconomy
+    ];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+///
+/// Créer une dépense dans l'économie de l'utilisateur
+/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+/// <param> int $idEconomy          <param> : Paramètre en INT, ID de l'économie de l'utilisateur
+/// <param> int $idSpendType        <param> : Paramètre en INT, ID du type de dépense (bouffe, loisir etc.. )
+/// <param> string $amount          <param> : Paramètre en STRING, Combien on a dépensé
+function updateSpending(int $idSpending, int $idEconomy, int $idSpendType, string $amount)
+{
+    $sql = "UPDATE INTO spending SET idEconomy = :ide, idSpendType = :idst, amount = :amo  WHERE idSpending = :ids";
+    $params = [
+        ":ids" => $idSpending,
+        ":ide" => $idEconomy,
+        ":idst" => $idSpendType,
+        ":amo" => $amount
+    ];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
+///
+/// Créer une dépense dans l'économie de l'utilisateur
+/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+function deleteSpending(int $idSpending)
+{
+    $sql = "DELETE FROM spending WHERE idSpending = :ids";
+    $params = [
+        ":ids" => $idSpending
+    ];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
+
+///
+/// Récupérer tous les types de dépenses
+/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+function readAllSpendTypes()
+{
+    $sql = "SELECT idSpendingType, Type FROM spendTypes";
+    $params = [];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
+function getMonthlyExpenses(int $userId): array {
+    $sql = "
+        SELECT MONTH(sp.dateCreated) AS month, SUM(sp.amount) AS total
+        FROM spending sp
+        JOIN economy e ON sp.idEconomy = e.idEconomy
+        WHERE e.idUser = :userId
+        GROUP BY MONTH(sp.dateCreated)
+        ORDER BY MONTH(sp.dateCreated);
+    ";
+
+    $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $monthlyExpenses = array_fill(1, 12, 0);
+    foreach ($result as $row) {
+        $monthlyExpenses[(int)$row['month']] = (float)$row['total'];
+    }
+
+    return $monthlyExpenses;
+}
+
+
+function getExpensesByType(int $userId): array {
+    $sql = "
+        SELECT st.Type, SUM(sp.amount) AS total
+        FROM spending sp
+        JOIN spendTypes st ON sp.idSpendType = st.idSpendingType
+        JOIN economy e ON sp.idEconomy = e.idEconomy
+        WHERE e.idUser = :userId
+        GROUP BY st.Type
+        ORDER BY total DESC
+    ";
+
+    $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+

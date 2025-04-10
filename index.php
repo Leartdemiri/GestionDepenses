@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UB$ | Page d'accueil</title>
+    <title>UB$ | Page Login</title>
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/form.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
@@ -66,36 +66,33 @@
                                     <form id="card-back" action="signup/" method="POST">
                                         <div class="center-wrap">
                                             <h4 class="heading">S'inscrire</h4>
+
                                             <div class="form-group">
-                                                <input type="text" class="form-style" placeholder="Votre Prénom"
-                                                    autocomplete="off">
-                                                <i class="input-icon material-icons">perm_identity</i>
-                                            </div>
-                                            <div class="form-group">
-                                                <input type="text" class="form-style" placeholder="Votre Nom"
-                                                    autocomplete="off">
+                                                <input type="text" name="firstname" class="form-style" placeholder="Votre Prénom" autocomplete="off" required>
                                                 <i class="input-icon material-icons">perm_identity</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="email" class="form-style" placeholder="Votre Email"
-                                                    autocomplete="off">
+                                                <input type="text" name="lastname" class="form-style" placeholder="Votre Nom" autocomplete="off" required>
+                                                <i class="input-icon material-icons">perm_identity</i>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <input type="email" name="email" class="form-style" placeholder="Votre Email" autocomplete="off" required>
                                                 <i class="input-icon material-icons">alternate_email</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="password" class="form-style"
-                                                    placeholder="Votre Mot De Passe" autocomplete="off">
+                                                <input type="password" name="password" class="form-style" placeholder="Votre Mot De Passe" autocomplete="off" required>
                                                 <i class="input-icon material-icons">lock</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="text" class="form-style" placeholder="Votre Devise"
-                                                    autocomplete="off">
+                                                <input type="text" name="currency" class="form-style" placeholder="Votre Devise (CHF, EUR, USD)" autocomplete="off" required>
                                                 <i class="input-icon material-icons">attach_money</i>
                                             </div>
 
-                                            <a href="#" class="btn">Submit</a>
+                                            <button type="submit" class="btn">Submit</button>
                                         </div>
                                     </form>
                                 </div>
