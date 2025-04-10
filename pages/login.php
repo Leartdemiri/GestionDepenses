@@ -51,7 +51,7 @@ try {
 
     // Rediriger vers la page d'accueil
     http_response_code(HTTP_STATUS_OK);
-    header("Location: ../index.php");
+    header("Location: Accueil.php");
 } catch (Throwable $th) {
     http_response_code(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     die("Erreur lors de la connexion.");
