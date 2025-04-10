@@ -1,5 +1,12 @@
+<?php
+require "php/functions.php";
+
+session_start();
+checkIfLogged("home/");
+
+?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -38,7 +45,7 @@
                         reprenez le contrôle.</h2>
                 </div>
                 <div class="right">
-                    <div class="form">
+                        <div class="form">
                         <div class="text-center">
                             <h6><span>Connexion</span> <span>Inscription</span></h6>
                             <input type="checkbox" class="checkbox" id="reg-log">
@@ -112,6 +119,18 @@
             </div>
         </div>
     </section>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

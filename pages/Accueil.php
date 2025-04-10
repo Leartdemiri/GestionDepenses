@@ -1,8 +1,12 @@
 <?php
+require_once "../php/functions.php";
 session_start();
+$user = checkIfUnlogged("../index.php");
+$hour = date("H"); // Heure actuelle au format 24h
+$greeting = ($hour >= 18 || $hour < 6) ? "Bonsoir" : "Bonjour";
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -26,8 +30,10 @@ session_start();
                     <i class="material-icons">menu</i>
                 </label>
                 <ul>
+                    <li><div class="welcome-name"><?= $greeting ?>, <?= htmlspecialchars($user["Firstname"]) ?> <?= htmlspecialchars($user["Lastname"]) ?></div></li>
                     <li><a href="" class="active">Home</a></li>
                     <li><a href="../payement/" class="active">Dépense</a></li>
+                    <li><a href="../logout/" class="active">LogOut</a></li>
                 </ul>
             </div>
         </div>
@@ -35,31 +41,32 @@ session_start();
 
     <main class="main-Accueil">
         <div class="welcome-message">
-            <h2>Bienvenue sur UB$</h2>
+            <h2>Bienvenue sur UB<span>$</span></h2>
             <p>Gérez vos finances facilement et efficacement.</p>
         </div>
+        <div class="account-balance">
+            <h3>Solde actuel</h3>
+            <p class="balance-amount">4'500.00 CHF</p>
+        </div>
+
         <div class="main-content">
             <section class="dashboard">
                 <div class="container">
                     <div class="row">
-
-
-                        <div class="latest-expenses">
-                            <h2 class="section-title">Dernières Dépenses</h2>
-                            <ul>
-                                <li>
-                                    <span class="expense-title">Achat Supermarché</span>
-                                    <span class="expense-amount">- 50.00 CHF</span>
-                                </li>
-                                <li>
-                                    <span class="expense-title">Abonnement Netflix</span>
-                                    <span class="expense-amount">- 15.00 CHF</span>
-                                </li>
-                                <li>
-                                    <span class="expense-title">Essence</span>
-                                    <span class="expense-amount">- 80.00 CHF</span>
-                                </li>
-                            </ul>
+                    <div class="latest-expenses">
+                        <h2 class="section-title">Dernières Dépenses</h2>
+                            <table class="expenses-table">
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>Montant</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -80,9 +87,65 @@ session_start();
             </section>
         </div>
     </main>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+            </section>
+        </div>
+    </main>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+            </section>
+        </div>
+    </main>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+            </section>
+        </div>
+    </main>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="../script/payment.js"></script>
-
 
 </body>
 

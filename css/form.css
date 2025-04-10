@@ -8,9 +8,7 @@
   --shadow: 0px 4px 8px 0 rgba(21, 21, 21, .2);
 }
 
-
 /*MAIN*/
-
 .left,
 .right {
   flex: 0 0 50%;

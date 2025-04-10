@@ -1,14 +1,15 @@
 <?php
 // database
-const DB_HOST   =     "localhost";
-const DB_NAME   =     "UB$";
-const DB_USER   =     "UBS_ADMIN";
-const DB_PASS   =     "SuperUBS";
+const DB_HOST = "localhost";
+const DB_NAME = "UB$";
+const DB_USER = "UBS_ADMIN";
+const DB_PASS = "SuperUBS";
 
 // website functionnality
 const CURRENCY_STRING_LENGTH = 3;
 const REQUIRED_TITLE_LENGTH = 3;
 const MINIMUM_PASS_LENGTH = 8;
+const SESSION_TOKEN_KEY = "token";
 
 // http error codes
 const HTTP_STATUS_OK = 200;

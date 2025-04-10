@@ -1,16 +1,10 @@
 <?php
-require_once "../php/crud.php";
 require_once "../php/functions.php";
 
 header("Access-Control-Allow-Origin: *");
 
-$method = $_SERVER['REQUEST_METHOD'];
-// Security
-if ($method !== "POST") {
-    http_response_code(HTTP_STATUS_METHOD_NOT_ALLOWED);
-    header("Location: ../index.php");
-    die();
-}
+//Security -- On est bien en POST?
+checkMethod("../index.php");
 
 // Security -- Est-ce que on a recu les bonnes données?
 $requiredFields = ['firstname', 'lastname', 'email', 'password', 'selectCurrency'];
@@ -36,15 +30,7 @@ try {
 } catch (Throwable $e) {
     DataBase::rollback();
     http_response_code(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    // header("Location: ../index.php?error=user_creation_failed");
-    
-    echo "Erreur lors de la création de l'utilisateur : " . $e->getMessage();
-    
-    // Facultatif : afficher plus d'informations pour déboguer
-    echo "<pre>";
-    var_dump($email, $fname, $lname, $token, $hashedPwd, $currency);
-    echo "</pre>";
-
+    header("Location: ../index.php?error=user_creation_failed");
     exit();
 }
 
@@ -68,8 +54,9 @@ try {
 
 if ($userOK == true || $ecoOK == true) {
     session_start();
-    $_SESSION['token'] = $token;
-    header("Location: home/");
+    $_SESSION[SESSION_TOKEN_KEY] = $token;
+    http_response_code(HTTP_STATUS_CREATED);
+    header("Location: ./home/");
 } else {
     http_response_code(HTTP_STATUS_BAD_REQUEST);
     header("Location: ../index.php");

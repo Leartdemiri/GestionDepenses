@@ -1,12 +1,12 @@
 <?php
 
-require_once './dbConfig.php';
-require_once './DataBase.php';
+require_once '../php/functions.php';
 
-// Fonction pour se déconnecter et supprimer le token
-function logout(string $token): void
-{
-    // Supprimer le token de la base de données
-    $sql = "UPDATE users SET token = NULL WHERE token = :token";
-    DataBase::dbRun($sql, ['token' => $token]);
-}
+
+session_start();
+
+$user = readOneUserByToken($_SESSION['token']);
+
+logout($user["idUser"], $_SESSION['token']);
+
+header('Location: ../index.php');

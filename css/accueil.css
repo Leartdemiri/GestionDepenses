@@ -9,6 +9,7 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    margin-bottom: 10rem;
 }
 
 .main-graph {
@@ -49,6 +50,28 @@
 .expense-title {
     font-weight: 600;
     color: var(--whiteSmoke);
+}
+
+.expenses-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1em;
+}
+
+.expenses-table th, .expenses-table td {
+    padding: 0.5em 1em;
+    border-bottom: 1px solid #333;
+    text-align: left;
+}
+
+.expenses-table th {
+    color: #00ffff;
+    font-weight: 600;
+    border-bottom: 2px solid #00ffff;
+}
+
+.expenses-table td {
+    color: #eee;
 }
 
 .expense-amount {
@@ -101,4 +124,33 @@
     justify-content: space-between;
     width: 100%;
     max-width: 1080px;
+}
+
+.welcome-name{
+    color: white;
+}
+
+
+/* Solde du compte styles */
+.account-balance {
+    margin-top: 20px;
+    text-align: center;
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,255,255,0.2);
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.account-balance h3 {
+    color: #00ffff;
+    margin-bottom: 10px;
+}
+
+.balance-amount {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
 }

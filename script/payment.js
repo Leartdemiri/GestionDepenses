@@ -3,7 +3,7 @@ async function loadStats() {
         const response = await fetch("../php/stats.php", {
             credentials: 'include'
         });
-        
+
         const data = await response.json();
 
         if (data.error) {
@@ -11,6 +11,7 @@ async function loadStats() {
             return;
         }
 
+        // === Graphique des dépenses mensuelles ===
         new Chart(document.getElementById('monthlyExpensesChart'), {
             type: 'line',
             data: {
@@ -35,6 +36,7 @@ async function loadStats() {
             }
         });
 
+        // === Graphique des dépenses par type ===
         new Chart(document.getElementById('expenseBreakdownChart'), {
             type: 'doughnut',
             data: {
@@ -59,9 +61,36 @@ async function loadStats() {
             }
         });
 
+        // === Dernières Dépenses dynamiques (version tableau) ===
+        const latestTable = document.querySelector(".latest-expenses tbody");
+        latestTable.innerHTML = "";
+
+        data.latestExpenses.forEach(exp => {
+            const row = document.createElement("tr");
+
+            const typeCell = document.createElement("td");
+            typeCell.textContent = exp.title;
+
+            const amountCell = document.createElement("td");
+            amountCell.textContent = ` ${parseFloat(exp.amount).toFixed(2)} ${exp.currency}`;
+            amountCell.style.fontWeight = "bold";
+
+            const dateCell = document.createElement("td");
+            dateCell.textContent = exp.date;
+
+            row.appendChild(typeCell);
+            row.appendChild(amountCell);
+            row.appendChild(dateCell);
+
+            latestTable.appendChild(row);
+        });
+
+
+
     } catch (err) {
         console.error("Erreur de chargement des statistiques :", err);
     }
 }
 
 window.onload = loadStats;
+

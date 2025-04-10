@@ -1,9 +1,11 @@
 <?php
-require_once '../php/crud.php';
+require_once '../php/functions.php';
+session_start();
 $SpendTypes = readAllSpendTypes();
+$user = checkIfUnlogged("../index.php");
 ?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
@@ -39,15 +41,16 @@ $SpendTypes = readAllSpendTypes();
                     <i class="material-icons">menu</i>
                 </label>
                 <ul>
-                    <li><a href="home/" class="active">Home</a></li>
+                    <li><a href="../home/" class="active">Home</a></li>
                     <li><a href="" class="active">Dépense</a></li>
+                    <li><a href="../logout/" class="active">LogOut</a></li>
                 </ul>
             </div>
         </div>
     </nav>
     <div class="form-container">
         <h6>Gérer vos finances</h6>
-        <form action="payement.php" method="POST">
+        <form action="" method="POST">
             <div class="form-group">
                 <select name="actionType" id="actionType" class="form-style" required onchange="toggleExpenseType()">
                     <option value="" disabled selected>Choisir une action</option>
@@ -74,6 +77,18 @@ $SpendTypes = readAllSpendTypes();
             <button type="submit" class="btn">Valider</button>
         </form>
     </div>
+    <footer class="global-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h2>UB<span class="footerUBS">$</span></h2>
+                </div>
+                <div class="footer-copyright">
+                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

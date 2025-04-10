@@ -3,8 +3,6 @@
 Fichier crud pour chaque classe de la base de donnée
 */
 
-require_once "database.php";
-
 /* ======================================================================================================================================================================*/
 /* ==== | USER | ==== */
 /* ======================================================================================================================================================================*/
@@ -72,17 +70,6 @@ function checkIfUserExist(string $email){
 }
 
 ///
-/// Récupère toutes les données d'un seul utilisateur de la base de donnée
-/// <param> string $token <param> : Paramètre en STRING, Token de l'utilisateur, grace a cela on peut savoir quel utilisateur est connecté
-function ReadOneUserByToken(string $token)
-{
-    $sql = "SELECT idUser, email, Firstname, Lastname, Token, Password, currency FROM user WHERE Token = :token";
-    $params = [":token" => $token];
-    $statement = DataBase::dbRun($sql, $params);
-    return $statement->fetch(PDO::FETCH_ASSOC);
-}
-
-///
 /// Créer un utilisateur dans la base de donnée et le login immédiatement en lui créant un token
 /// <param> int     $id          <param> : Paramètre en INT, id de l'utilisateur que l'ont veux modifier
 /// <param> string  $email       <param> : Paramètre en STRING, Email de l'utilisateur
@@ -113,7 +100,7 @@ function updateUser(int $id, string $email, string $firstname, string $lastname,
 /// <param> string  $token       <param> : Paramètre en STRING, Modifier le token de l'utilisateur concerné ( peut etre null )
 function updateUserToken(int $id, string $token)
 {
-    $sql = "UPDATE INTO user SET Token = :token WHERE idUser = :id";
+    $sql = "UPDATE user SET Token = :token WHERE idUser = :id";
     $params = [
         ":token" => $token,
         ":id" => $id
