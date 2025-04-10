@@ -68,27 +68,36 @@
                                             <h4 class="heading">S'inscrire</h4>
 
                                             <div class="form-group">
-                                                <input type="text" name="firstname" class="form-style" placeholder="Votre Prénom" autocomplete="off" required>
+                                                <input type="text" name="firstname" class="form-style"
+                                                    placeholder="Votre Prénom" autocomplete="off" required>
                                                 <i class="input-icon material-icons">perm_identity</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="text" name="lastname" class="form-style" placeholder="Votre Nom" autocomplete="off" required>
+                                                <input type="text" name="lastname" class="form-style"
+                                                    placeholder="Votre Nom" autocomplete="off" required>
                                                 <i class="input-icon material-icons">perm_identity</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="email" name="email" class="form-style" placeholder="Votre Email" autocomplete="off" required>
+                                                <input type="email" name="email" class="form-style"
+                                                    placeholder="Votre Email" autocomplete="off" required>
                                                 <i class="input-icon material-icons">alternate_email</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="password" name="password" class="form-style" placeholder="Votre Mot De Passe" autocomplete="off" required>
+                                                <input type="password" name="password" class="form-style"
+                                                    placeholder="Votre Mot De Passe" autocomplete="off" required>
                                                 <i class="input-icon material-icons">lock</i>
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="text" name="currency" class="form-style" placeholder="Votre Devise (CHF, EUR, USD)" autocomplete="off" required>
+                                                <select name="selectCurrency" id="selectCurrency" class="form-style" required>
+                                                    <option value="" disabled selected>Choisir une Devise</option>
+                                                    <option value="CHF">CHF</option>
+                                                    <option value="EUR">EUR</option>
+                                                    <option value="USD">USD</option>
+                                                </select>
                                                 <i class="input-icon material-icons">attach_money</i>
                                             </div>
 

@@ -1,3 +1,4 @@
+/* Global styles */
 .dashboard, .graphs {
     padding: 60px 25px;
     color: var(--whiteSmoke);
@@ -10,11 +11,24 @@
     align-items: center;
 }
 
+.main-graph {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
 
 .section-title {
     font-size: 32px;
     margin-bottom: 20px;
     color: var(--mainColor);
+}
+
+/* Latest expenses styles */
+.latest-expenses {
+    flex: 1;
+    margin-right: 20px;
 }
 
 .latest-expenses ul {
@@ -42,6 +56,7 @@
     font-weight: 600;
 }
 
+/* Graph container styles */
 .graph-container {
     display: flex;
     flex-direction: column;
@@ -60,6 +75,7 @@
     margin-left: 20px;
 }
 
+/* Main accueil styles */
 .main-Accueil {
     display: flex;
     flex-direction: column;
@@ -69,18 +85,20 @@
 }
 
 .welcome-message {
-    text-align: center;
-    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    margin-top: 5rem;
+    font-size: 24px;
+    margin-bottom: 10rem;
 }
 
+/* Dashboard styles */
 .dashboard {
     display: flex;
     justify-content: space-between;
     width: 100%;
     max-width: 1080px;
-}
-
-.latest-expenses {
-    flex: 1;
-    margin-right: 20px;
 }

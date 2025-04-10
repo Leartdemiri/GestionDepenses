@@ -1,6 +1,6 @@
 <?php
 require_once '../php/crud.php';
-readAllSpendTypes();
+$SpendTypes = readAllSpendTypes();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +39,8 @@ readAllSpendTypes();
                     <i class="material-icons">menu</i>
                 </label>
                 <ul>
-                    <li><a href="./Accueil.php" class="active">Home</a></li>
+                    <li><a href="home/" class="active">Home</a></li>
+                    <li><a href="" class="active">Dépense</a></li>
                 </ul>
             </div>
         </div>
@@ -62,13 +63,11 @@ readAllSpendTypes();
             <div class="form-group" id="expenseTypeGroup">
                 <select name="spendType" class="form-style">
                     <option value="" disabled selected>Type de Dépense</option>
-                    <?php 
-
-                    for ($i = 0; $i < 10; $i++) {
-                        echo "<option value='$i'>Type $i</option>";
-                    } 
-                    <option value="1">Achats</option>
-                    ?>            
+                    <?php
+                    foreach ($SpendTypes as $spendType) {
+                        echo "<option value='{$spendType['idSpendingType']}'>{$spendType['Type']}</option>";
+                    }
+                    ?>
                 </select>
                 <i class="input-icon material-icons">category</i>
             </div>

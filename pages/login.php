@@ -1,7 +1,7 @@
 <?php
 
 require_once "../php/functions.php";
-
+require_once "../php/crud.php";
 
 $method = $_SERVER['REQUEST_METHOD'];
 

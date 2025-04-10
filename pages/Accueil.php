@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,8 +26,8 @@
                     <i class="material-icons">menu</i>
                 </label>
                 <ul>
-                    <li><a href="./Accueil.php" class="active">Home</a></li>
-                    <li><a href="./payement.php" class="active">Dépense</a></li>
+                    <li><a href="" class="active">Home</a></li>
+                    <li><a href="../payement/" class="active">Dépense</a></li>
                 </ul>
             </div>
         </div>
@@ -62,7 +65,7 @@
                 </div>
             </section>
             <section>
-                <div class="graph-container">
+                <div class="main-graph">
                     <h2>Statistiques</h2>
                     <div class="graph-container">
                         <div class="graph">
@@ -77,9 +80,9 @@
             </section>
         </div>
     </main>
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module" src="../script/payment.js"></script>
+
 
 </body>
 

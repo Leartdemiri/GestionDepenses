@@ -52,6 +52,16 @@ function readOneUserByID(int $id)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+/// Récupère toutes les données d'un seul utilisateur de la base de donnée
+/// <param> string $token <param> : Paramètre en STRING, Token de l'utilisateur que l'ont veux récupérer
+function readOneUserByToken(string $token)
+{
+    $sql = "SELECT idUser, email, Firstname, Lastname, Token, Password, currency FROM user WHERE Token = :token";
+    $params = [":token" => $token];
+    $statement = DataBase::dbRun($sql, $params);
+    return $statement->fetch(PDO::FETCH_ASSOC);
+}
+
 /// Est-ce que un utilisateur éxiste?
 /// <param> string $email <param> : Paramètre en STRING, email de l'utilisateur que l'ont veux récupérer
 function checkIfUserExist(string $email){
@@ -143,7 +153,7 @@ function createEconomy(string $monthlyInput, string $monthlyLimit, string $spend
         ":minput" => floatval($monthlyInput),
         ":mlimit" => floatval($monthlyLimit),
         ":spaim" => floatval($spendAim),
-        ":bmoney" => $BaseMoney
+        ":bmoney" => floatval($BaseMoney)
     ];
     $statement = DataBase::dbRun($sql, $params);
     return $statement ? true : false;

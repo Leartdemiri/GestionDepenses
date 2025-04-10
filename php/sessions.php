@@ -10,10 +10,7 @@ if (!isset($_SESSION['token'])) {
 }
 
 $token = $_SESSION['token'];
-$sql = "SELECT idUser FROM user WHERE Token = :token";
-$statement = DataBase::dbRun($sql, [':token' => $token]);
-$user = $statement->fetch(PDO::FETCH_ASSOC);
-
+$user = readOneUserByToken($token);
 if (!$user) {
     session_destroy();
     http_response_code(HTTP_STATUS_UNAUTHORIZED);
