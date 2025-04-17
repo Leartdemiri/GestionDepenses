@@ -1,8 +1,71 @@
 <?php
 require_once '../php/functions.php';
 session_start();
-$SpendTypes = readAllSpendTypes();
+
+// Vérification de l'utilisateur connecté
 $user = checkIfUnlogged("../index.php");
+
+// Récupération des types de dépenses
+$SpendTypes = readAllSpendTypes();
+
+// Récupération des données économiques de l'utilisateur
+$economy = readOneEconomy($user['idUser']);
+if (!$economy) {
+    try {
+        DataBase::begin();
+        createEconomy(0, 0, 0, 0, $user['idUser']);
+        DataBase::commit();
+        $economy = readOneEconomy($user['idUser']);
+    } catch (Throwable $e) {
+        DataBase::rollback();
+        error_log("Erreur lors de la création de l'économie : " . $e->getMessage());
+        header("Location: payement.php?error=economy_creation_failed");
+        exit();
+    }
+}
+
+$currentBalance = $economy['BaseMoney'] ?? 0;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $actionType = filter_input(INPUT_POST, 'actionType', FILTER_SANITIZE_STRING);
+    $amount = filter_input(INPUT_POST, 'amount', FILTER_VALIDATE_FLOAT);
+    $spendType = filter_input(INPUT_POST, 'spendType', FILTER_VALIDATE_INT);
+    try {
+        if (!$actionType || $amount === null || $amount <= 0) {
+            throw new Exception("Données invalides. Veuillez remplir tous les champs correctement.");
+        }
+
+        DataBase::begin();
+
+        if ($actionType === 'addExpense' && $spendType) {
+            $newBalance = $currentBalance - $amount;
+            if ($newBalance < 0) {
+                throw new Exception("Solde insuffisant pour effectuer cette dépense.");
+            }
+            createSpending($economy['idEconomy'], $spendType, $amount);
+        } elseif ($actionType === 'addMoney') {
+            $newBalance = $currentBalance + $amount;
+        } else {
+            throw new Exception("Type d'action invalide ou type de dépense manquant.");
+        }
+
+        updateEconomy(
+            $economy['monthlyLimit'],
+            $economy['spendAim'],
+            $newBalance,
+            $user['idUser']
+        );
+
+        DataBase::commit();
+        header("Location: payement.php?success=1");
+        exit();
+    } catch (Throwable $e) {
+        DataBase::rollback();
+        error_log("Erreur lors de la mise à jour du solde : " . $e->getMessage());
+        header("Location: payement.php?error=" . urlencode($e->getMessage()));
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -17,18 +80,6 @@ $user = checkIfUnlogged("../index.php");
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/material-icons@1.13.12/iconfont/material-icons.min.css">
     <link rel="icon" type="image/png" href="../ressources/images/icon1.png">
-    <script>
-        // JavaScript pour afficher/masquer le champ "Type de Dépense"
-        function toggleExpenseType() {
-            const actionType = document.getElementById('actionType');
-            const expenseTypeGroup = document.getElementById('expenseTypeGroup');
-            if (actionType.value === 'addMoney') {
-                expenseTypeGroup.style.display = 'none';
-            } else {
-                expenseTypeGroup.style.display = 'block';
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -36,7 +87,7 @@ $user = checkIfUnlogged("../index.php");
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="logo">UB<span>$</span></div>
-                <input type="checkbox" name="" id="click">
+                <input type="checkbox" id="click">
                 <label for="click" class="menu-btn">
                     <i class="material-icons">menu</i>
                 </label>
@@ -48,9 +99,18 @@ $user = checkIfUnlogged("../index.php");
             </div>
         </div>
     </nav>
+
     <div class="form-container">
         <h6>Gérer vos finances</h6>
-        <form action="" method="POST">
+        <p>Solde actuel: <strong><?= number_format($currentBalance, 2, ".", " ") ?> CHF</strong></p>
+
+        <?php if (isset($_GET['error'])): ?>
+            <p style="color: red;"><?= htmlspecialchars($_GET['error']) ?></p>
+        <?php elseif (isset($_GET['success'])): ?>
+            <p style="color: green;">Action effectuée avec succès !</p>
+        <?php endif; ?>
+
+        <form action="payement.php" method="POST">
             <div class="form-group">
                 <select name="actionType" id="actionType" class="form-style" required onchange="toggleExpenseType()">
                     <option value="" disabled selected>Choisir une action</option>
@@ -60,23 +120,24 @@ $user = checkIfUnlogged("../index.php");
                 <i class="input-icon material-icons">swap_horiz</i>
             </div>
             <div class="form-group">
-                <input type="number" name="amount" class="form-style" placeholder="Montant" required>
+                <input type="number" name="amount" class="form-style" placeholder="Montant" required min="0"
+                    step="0.01">
                 <i class="input-icon material-icons">attach_money</i>
             </div>
-            <div class="form-group" id="expenseTypeGroup">
+            <div class="form-group" id="expenseTypeGroup" style="display: none;">
                 <select name="spendType" class="form-style">
                     <option value="" disabled selected>Type de Dépense</option>
-                    <?php
-                    foreach ($SpendTypes as $spendType) {
-                        echo "<option value='{$spendType['idSpendingType']}'>{$spendType['Type']}</option>";
-                    }
-                    ?>
+                    <?php foreach ($SpendTypes as $spendType): ?>
+                        <option value="<?= $spendType['idSpendingType'] ?>"><?= htmlspecialchars($spendType['Type']) ?>
+                        </option>
+                    <?php endforeach; ?>
                 </select>
                 <i class="input-icon material-icons">category</i>
             </div>
             <button type="submit" class="btn">Valider</button>
         </form>
     </div>
+
     <footer class="global-footer">
         <div class="container">
             <div class="footer-content">
@@ -84,11 +145,19 @@ $user = checkIfUnlogged("../index.php");
                     <h2>UB<span class="footerUBS">$</span></h2>
                 </div>
                 <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                    <p>&copy; <?= date("Y") ?> UB<span class="footerUBS">$</span>. Tous droits réservés.</p>
                 </div>
             </div>
         </div>
     </footer>
+
+    <script>
+        function toggleExpenseType() {
+            const actionType = document.getElementById('actionType').value;
+            const expenseTypeGroup = document.getElementById('expenseTypeGroup');
+            expenseTypeGroup.style.display = actionType === 'addExpense' ? 'block' : 'none';
+        }
+    </script>
 </body>
 
 </html>

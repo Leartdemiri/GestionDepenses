@@ -4,6 +4,7 @@ require "php/functions.php";
 session_start();
 checkIfLogged("home/");
 
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -65,7 +66,7 @@ checkIfLogged("home/");
                                                     placeholder="Votre Mot De Passe" autocomplete="off" required>
                                                 <i class="input-icon material-icons">lock</i>
                                             </div>
-                                            <button type="submit" class="btn">Submit</button>
+                                            <button type="submit" class="btn">Connexion</button>
                                             <p class="text-center"><a href="#" class="link">Mot de passe oublié?</a></p>
                                         </div>
                                     </form>
@@ -108,7 +109,7 @@ checkIfLogged("home/");
                                                 <i class="input-icon material-icons">attach_money</i>
                                             </div>
 
-                                            <button type="submit" class="btn">Submit</button>
+                                            <button type="submit" class="btn">Inscription</button>
                                         </div>
                                     </form>
                                 </div>
@@ -126,7 +127,7 @@ checkIfLogged("home/");
                     <h2>UB<span class="footerUBS">$</span></h2>
                 </div>
                 <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                    <p>&copy; <?php echo date("Y"); ?> UB<span class="footerUBS">$</span>. Tous droits réservés.</p>
                 </div>
             </div>
         </div>

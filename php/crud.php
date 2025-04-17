@@ -71,13 +71,13 @@ function checkIfUserExist(string $email){
 
 ///
 /// Créer un utilisateur dans la base de donnée et le login immédiatement en lui créant un token
-/// <param> int     $id          <param> : Paramètre en INT, id de l'utilisateur que l'ont veux modifier
-/// <param> string  $email       <param> : Paramètre en STRING, Email de l'utilisateur
-/// <param> string  $firstname   <param> : Paramètre en STRING, Prénom de l'utilisateur
-/// <param> string  $lastname    <param> : Paramètre en STRING, Nom de famille de l'utilisateur
-/// <param> string  $token       <param> : Paramètre en STRING, Le token de de l'utilisateur qui permet de savoir qui est si on est connecté
-/// <param> string  $password    <param> : Paramètre en STRING, Mot de pass de l'utilisateur ( préférablement hashé en BCrypt)
-/// <param> string  $currency    <param> : Paramètre en STRING, Currency utilisé et préférée de l'utilisateur
+/// <param> int        $id          <param> : Paramètre en INT, id de l'utilisateur que l'ont veux modifier
+/// <param> string     $email       <param> : Paramètre en STRING, Email de l'utilisateur
+/// <param> string     $firstname   <param> : Paramètre en STRING, Prénom de l'utilisateur
+/// <param> string     $lastname    <param> : Paramètre en STRING, Nom de famille de l'utilisateur
+/// <param> string     $token       <param> : Paramètre en STRING, Le token de de l'utilisateur qui permet de savoir qui est si on est connecté
+/// <param> string     $password    <param> : Paramètre en STRING, Mot de pass de l'utilisateur ( préférablement hashé en BCrypt)
+/// <param> string     $currency    <param> : Paramètre en STRING, Currency utilisé et préférée de l'utilisateur
 function updateUser(int $id, string $email, string $firstname, string $lastname, string $token, string $password, string $currency)
 {
     $sql = "UPDATE INTO user SET email = :email, Firstname = :fname,Lastname = :lname,Token = :token,Password = :password,currency = :currency WHERE idUser = :id";
@@ -126,18 +126,16 @@ function deleteUser(int $id)
 
 ///
 /// Créer une économie dédiée à un utilisateur
-/// <param> string $monthlyInput <param> :  Entrée mensuelle de l'utilisateur
 /// <param> string $monthlyLimit <param> :  Limite mensuelle fixée
 /// <param> string $spendAim     <param> :  Objectif de dépense
 /// <param> string $BaseMoney    <param> :  Argent de base
 /// <param> int    $id           <param> :  ID de l'utilisateur
-function createEconomy(string $monthlyInput, string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
+function createEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
 {
-    $sql = "INSERT INTO economy (idUser, monthlyInput, monthlyLimit, spendAim, BaseMoney) 
-            VALUES (:id, :minput, :mlimit, :spaim, :bmoney)";
+    $sql = "INSERT INTO economy (idUser, monthlyLimit, spendAim, BaseMoney) 
+            VALUES (:id, :mlimit, :spaim, :bmoney)";
     $params = [
         ":id" => $id,
-        ":minput" => floatval($monthlyInput),
         ":mlimit" => floatval($monthlyLimit),
         ":spaim" => floatval($spendAim),
         ":bmoney" => floatval($BaseMoney)
@@ -150,7 +148,7 @@ function createEconomy(string $monthlyInput, string $monthlyLimit, string $spend
 /// Lire toutes les économies
 function readEconomies()
 {
-    $sql = "SELECT idEconomy, idUser, monthlyInput, monthlyLimit, spendAim, BaseMoney FROM economy";
+    $sql = "SELECT idEconomy, idUser, monthlyLimit, spendAim, BaseMoney FROM economy";
     $params = [];
     $statement = DataBase::dbRun($sql, $params);
     return $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -161,7 +159,7 @@ function readEconomies()
 /// <param> int $id <param> : ID de l'utilisateur
 function readOneEconomy(int $id)
 {
-    $sql = "SELECT idEconomy, idUser, monthlyInput, monthlyLimit, spendAim, BaseMoney 
+    $sql = "SELECT idEconomy, idUser, monthlyLimit, spendAim, BaseMoney 
             FROM economy WHERE idUser = :id";
     $params = [":id" => $id];
     $statement = DataBase::dbRun($sql, $params);
@@ -170,17 +168,15 @@ function readOneEconomy(int $id)
 
 ///
 /// Modifier une économie dédiée à un utilisateur
-/// <param> string $monthlyInput    <param>
 /// <param> string $monthlyLimit    <param>
 /// <param> string $spendAim        <param>
 /// <param> string $BaseMoney       <param>
 /// <param> int    $id              <param>
-function updateEconomy(string $monthlyInput, string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
+function updateEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
 {
-    $sql = "UPDATE economy SET monthlyInput = :minput, monthlyLimit = :mlimit, spendAim = :spaim, BaseMoney = :bmoney WHERE idUser = :id";
+    $sql = "UPDATE economy SET monthlyLimit = :mlimit, spendAim = :spaim, BaseMoney = :bmoney WHERE idUser = :id";
     $params = [
         ":id" => $id,
-        ":minput" => $monthlyInput,
         ":mlimit" => $monthlyLimit,
         ":spaim" => $spendAim,
         ":bmoney" => $BaseMoney

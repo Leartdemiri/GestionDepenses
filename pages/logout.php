@@ -2,11 +2,10 @@
 
 require_once '../php/functions.php';
 
-
 session_start();
 
-$user = readOneUserByToken($_SESSION['token']);
+$user = readOneUserByToken($_SESSION[SESSION_TOKEN_KEY]);
 
-logout($user["idUser"], $_SESSION['token']);
+logout($user["idUser"], $_SESSION[SESSION_TOKEN_KEY]);
 
 header('Location: ../index.php');

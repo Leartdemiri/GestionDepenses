@@ -7,6 +7,9 @@ header("Access-Control-Allow-Origin: *");
 //Security -- On est bien en POST?
 checkMethod("../index.php");
 
+// Security -- Est-ce que on est déja loggé?
+checkIfLogged("home/");
+
 // Security -- Est-ce que on a recu les bonnes données?
 $requiredFields = ['email', 'password'];
 checkPOSTFields($requiredFields);

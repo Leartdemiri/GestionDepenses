@@ -65,7 +65,7 @@ function getExpensesByType(int $userId): array {
     }
 }
 
-function getLatestExpenses(int $userId, int $limit = 3): array {
+function getLatestExpenses(int $userId, int $limit = 10): array {
     $sql = "
         SELECT 
             st.Type AS title,

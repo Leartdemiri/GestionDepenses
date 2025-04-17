@@ -35,7 +35,7 @@ CREATE TABLE spending (
     idSpending INT PRIMARY KEY AUTO_INCREMENT,
     idEconomy INT,
     idSpendType INT,
-    amount INT,
+    amount DOUBLE,
     FOREIGN KEY (idEconomy) REFERENCES economy(idEconomy) ON DELETE CASCADE,
     FOREIGN KEY (idSpendType) REFERENCES spendTypes(idSpendingType)
 );

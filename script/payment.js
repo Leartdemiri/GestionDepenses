@@ -1,3 +1,35 @@
+function slideDown(el, duration = 200) {
+    el.style.display = 'block';
+    el.style.height = '0px';
+    el.style.overflow = 'hidden';
+
+    const targetHeight = el.scrollHeight + 'px';
+    el.offsetHeight;
+    el.style.transition = `height ${duration}ms ease`;
+    el.style.height = targetHeight;
+
+    setTimeout(() => {
+        el.style.height = '';
+        el.style.transition = '';
+        el.style.overflow = '';
+    }, duration);
+}
+
+function slideUp(el, duration = 200) {
+    el.style.height = el.scrollHeight + 'px';
+    el.offsetHeight;
+    el.style.transition = `height ${duration}ms ease`;
+    el.style.height = '0px';
+    el.style.overflow = 'hidden';
+
+    setTimeout(() => {
+        el.style.display = 'none';
+        el.style.height = '';
+        el.style.transition = '';
+        el.style.overflow = '';
+    }, duration);
+}
+
 async function loadStats() {
     try {
         const response = await fetch("../php/stats.php", {
@@ -5,13 +37,8 @@ async function loadStats() {
         });
 
         const data = await response.json();
+        if (data.error) return;
 
-        if (data.error) {
-            console.error(data.error);
-            return;
-        }
-
-        // === Graphique des dépenses mensuelles ===
         new Chart(document.getElementById('monthlyExpensesChart'), {
             type: 'line',
             data: {
@@ -36,8 +63,8 @@ async function loadStats() {
             }
         });
 
-        // === Graphique des dépenses par type ===
-        new Chart(document.getElementById('expenseBreakdownChart'), {
+        const doughnutCtx = document.getElementById('expenseBreakdownChart').getContext('2d');
+        new Chart(doughnutCtx, {
             type: 'doughnut',
             data: {
                 labels: data.expenseTypes.map(e => e.Type),
@@ -57,40 +84,165 @@ async function loadStats() {
                         display: true,
                         text: 'Répartition des Dépenses'
                     }
+                },
+                onClick: function (event, elements) {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const clickedCategory = this.data.labels[index];
+                        window.location.href = `?type=${encodeURIComponent(clickedCategory)}`;
+                    }
                 }
             }
         });
 
-        // === Dernières Dépenses dynamiques (version tableau) ===
         const latestTable = document.querySelector(".latest-expenses tbody");
-        latestTable.innerHTML = "";
+        const totalDisplay = document.getElementById("totalAmount");
 
-        data.latestExpenses.forEach(exp => {
-            const row = document.createElement("tr");
+        if (latestTable && !window.location.search.includes("type=")) {
+            latestTable.innerHTML = "";
+            let total = 0;
 
-            const typeCell = document.createElement("td");
-            typeCell.textContent = exp.title;
+            data.latestExpenses.forEach(exp => {
+                const row = document.createElement("tr");
 
-            const amountCell = document.createElement("td");
-            amountCell.textContent = ` ${parseFloat(exp.amount).toFixed(2)} ${exp.currency}`;
-            amountCell.style.fontWeight = "bold";
+                const typeCell = document.createElement("td");
+                typeCell.textContent = exp.type || exp.title;
 
-            const dateCell = document.createElement("td");
-            dateCell.textContent = exp.date;
+                const amountCell = document.createElement("td");
+                const amount = parseFloat(exp.amount);
+                total += amount;
+                amountCell.textContent = `${amount.toFixed(2)} ${exp.currency}`;
+                amountCell.style.fontWeight = "bold";
 
-            row.appendChild(typeCell);
-            row.appendChild(amountCell);
-            row.appendChild(dateCell);
+                const dateCell = document.createElement("td");
+                dateCell.textContent = exp.date;
 
-            latestTable.appendChild(row);
-        });
+                row.appendChild(typeCell);
+                row.appendChild(amountCell);
+                row.appendChild(dateCell);
+                latestTable.appendChild(row);
+            });
 
-
+            // ✅ Ajout du total global
+            if (totalDisplay) {
+                totalDisplay.textContent = `Total : ${total.toFixed(2)} CHF`;
+            }
+        }
 
     } catch (err) {
         console.error("Erreur de chargement des statistiques :", err);
     }
 }
 
-window.onload = loadStats;
+async function loadCategoryExpensesOnly() {
+    const params = new URLSearchParams(window.location.search);
+    const type = params.get("type");
+    if (!type) return;
 
+    try {
+        const response = await fetch("../php/stats.php", {
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+        if (data.error) return;
+
+        const filteredByType = data.latestExpenses.filter(exp => exp.title === type);
+
+        const monthSelect = document.getElementById("monthFilter");
+        const monthIcon = document.getElementById("monthFilterIcon");
+        const totalDisplay = document.getElementById("totalAmount");
+
+        function renderTable(monthFilter = "") {
+            const tbody = document.querySelector(".expenses-table tbody");
+            tbody.innerHTML = "";
+            let total = 0;
+
+            const displayed = filteredByType.filter(exp => {
+                if (!monthFilter) return true;
+                const month = new Date(exp.date).getMonth() + 1;
+                return month.toString().padStart(2, "0") === monthFilter;
+            });
+
+            if (displayed.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 3;
+                cell.textContent = "Aucune dépense trouvée.";
+                row.appendChild(cell);
+                tbody.appendChild(row);
+            }
+
+            displayed.forEach(exp => {
+                const row = document.createElement("tr");
+
+                const typeCell = document.createElement("td");
+                typeCell.textContent = exp.title;
+
+                const amountCell = document.createElement("td");
+                const amount = parseFloat(exp.amount);
+                total += amount;
+                amountCell.textContent = `${amount.toFixed(2)} ${exp.currency}`;
+                amountCell.style.fontWeight = "bold";
+
+                const dateCell = document.createElement("td");
+                dateCell.textContent = exp.date;
+
+                row.appendChild(typeCell);
+                row.appendChild(amountCell);
+                row.appendChild(dateCell);
+                tbody.appendChild(row);
+            });
+
+            totalDisplay.textContent = `Total : ${total.toFixed(2)} CHF`;
+        }
+
+        renderTable();
+
+        if (monthSelect && monthIcon && totalDisplay) {
+            monthIcon.addEventListener("click", () => {
+                if (monthSelect.style.display === "none" || getComputedStyle(monthSelect).display === "none") {
+                    slideDown(monthSelect);
+                } else {
+                    slideUp(monthSelect);
+                }
+            });
+
+            monthSelect.addEventListener("change", () => {
+                renderTable(monthSelect.value);
+            });
+        }
+
+        const sectionTitle = document.querySelector(".section-title");
+        if (sectionTitle) sectionTitle.textContent = `Dépenses pour : ${type}`;
+
+    } catch (e) {
+        console.error("Erreur :", e);
+    }
+}
+
+function toggleExpenseType() {
+    const actionType = document.getElementById('actionType');
+    const expenseTypeGroup = document.getElementById('expenseTypeGroup');
+    if (!actionType || !expenseTypeGroup) return;
+
+    expenseTypeGroup.style.display = actionType.value === 'addMoney' ? 'none' : 'block';
+}
+
+window.onload = () => {
+    loadStats();
+    loadCategoryExpensesOnly();
+    toggleExpenseType();
+
+    const icon = document.getElementById("monthFilterIcon");
+    const select = document.getElementById("monthFilter");
+    if (icon && select) {
+        icon.addEventListener("click", () => {
+            if (select.style.display === "none" || getComputedStyle(select).display === "none") {
+                slideDown(select);
+            } else {
+                slideUp(select);
+            }
+        });
+    }
+};

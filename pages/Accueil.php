@@ -2,8 +2,10 @@
 require_once "../php/functions.php";
 session_start();
 $user = checkIfUnlogged("../index.php");
-$hour = date("H"); // Heure actuelle au format 24h
-$greeting = ($hour >= 18 || $hour < 6) ? "Bonsoir" : "Bonjour";
+$greeting = (date("H") >= 18 || date("H") < 6) ? "Bonsoir" : "Bonjour";
+$userEconomy = readOneEconomy($user['idUser']);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -46,7 +48,7 @@ $greeting = ($hour >= 18 || $hour < 6) ? "Bonsoir" : "Bonjour";
         </div>
         <div class="account-balance">
             <h3>Solde actuel</h3>
-            <p class="balance-amount">4'500.00 CHF</p>
+            <p class="balance-amount"><?php echo $userEconomy["BaseMoney"] . " " . $user["currency"]?> </p>
         </div>
 
         <div class="main-content">
@@ -60,13 +62,34 @@ $greeting = ($hour >= 18 || $hour < 6) ? "Bonsoir" : "Bonjour";
                                     <tr>
                                         <th>Type</th>
                                         <th>Montant</th>
-                                        <th>Date</th>
+                                        <th>
+                                            Date
+                                            <i class="fa-solid fa-filter" id="monthFilterIcon" style="cursor: pointer; margin-left: 5px;"></i>
+                                            <select id="monthFilter" style="display: none; margin-left: 5px;">
+                                                <option value="">Tous</option>
+                                                <option value="01">Janvier</option>
+                                                <option value="02">Février</option>
+                                                <option value="03">Mars</option>
+                                                <option value="04">Avril</option>
+                                                <option value="05">Mai</option>
+                                                <option value="06">Juin</option>
+                                                <option value="07">Juillet</option>
+                                                <option value="08">Août</option>
+                                                <option value="09">Septembre</option>
+                                                <option value="10">Octobre</option>
+                                                <option value="11">Novembre</option>
+                                                <option value="12">Décembre</option>
+                                            </select>
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                    
                                 </tbody>
                             </table>
+                        <div id="totalAmount" style="text-align: right; margin-top: 10px; font-weight: bold;">
+                            Total : 0.00 CHF
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -94,57 +117,12 @@ $greeting = ($hour >= 18 || $hour < 6) ? "Bonsoir" : "Bonjour";
                     <h2>UB<span class="footerUBS">$</span></h2>
                 </div>
                 <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
+                    <p>&copy; <?php echo date("Y"); ?> UB<span class="footerUBS">$</span>. Tous droits réservés.</p>
                 </div>
             </div>
         </div>
     </footer>
-            </section>
-        </div>
-    </main>
-    <footer class="global-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>UB<span class="footerUBS">$</span></h2>
-                </div>
-                <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-            </section>
-        </div>
-    </main>
-    <footer class="global-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>UB<span class="footerUBS">$</span></h2>
-                </div>
-                <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-            </section>
-        </div>
-    </main>
-    <footer class="global-footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <h2>UB<span class="footerUBS">$</span></h2>
-                </div>
-                <div class="footer-copyright">
-                    <p>&copy; <?php echo date("Y"); ?> UB$. Tous droits réservés.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script type="module" src="../script/payment.js"></script>
 
 </body>
