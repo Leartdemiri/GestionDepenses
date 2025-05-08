@@ -46,7 +46,7 @@ checkIfLogged("home/");
                         reprenez le contrôle.</h2>
                 </div>
                 <div class="right">
-                        <div class="form">
+                    <div class="form">
                         <div class="text-center">
                             <h6><span>Connexion</span> <span>Inscription</span></h6>
                             <input type="checkbox" class="checkbox" id="reg-log">
@@ -56,20 +56,26 @@ checkIfLogged("home/");
                                     <form id="card-front" action="login/" method="POST">
                                         <div class="center-wrap">
                                             <h4 class="heading">Se connecter</h4>
+
                                             <div class="form-group">
                                                 <input type="email" name="email" class="form-style"
                                                     placeholder="Votre Email" autocomplete="off" required>
                                                 <i class="input-icon material-icons">alternate_email</i>
                                             </div>
+
                                             <div class="form-group">
                                                 <input type="password" name="password" class="form-style"
                                                     placeholder="Votre Mot De Passe" autocomplete="off" required>
                                                 <i class="input-icon material-icons">lock</i>
                                             </div>
+
+                                            <?php displayFormErrors(); ?>
+
                                             <button type="submit" class="btn">Connexion</button>
-                                            <p class="text-center"><a href="#" class="link">Mot de passe oublié?</a></p>
                                         </div>
                                     </form>
+
+
 
                                     <form id="card-back" action="signup/" method="POST">
                                         <div class="center-wrap">
@@ -100,7 +106,8 @@ checkIfLogged("home/");
                                             </div>
 
                                             <div class="form-group">
-                                                <select name="selectCurrency" id="selectCurrency" class="form-style" required>
+                                                <select name="selectCurrency" id="selectCurrency" class="form-style"
+                                                    required>
                                                     <option value="" disabled selected>Choisir une Devise</option>
                                                     <option value="CHF">CHF</option>
                                                     <option value="EUR">EUR</option>
@@ -108,6 +115,8 @@ checkIfLogged("home/");
                                                 </select>
                                                 <i class="input-icon material-icons">attach_money</i>
                                             </div>
+
+                                            <?php displayFormErrors(); ?>
 
                                             <button type="submit" class="btn">Inscription</button>
                                         </div>

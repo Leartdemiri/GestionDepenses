@@ -279,6 +279,15 @@ input[type="checkbox"] {
   transition: all .2s linear;
 }
 
+.error-msg {
+  color: #ff4d4d;
+  font-size: 12px;
+  margin-top: 4px;
+  display: block;
+  min-height: 14px;
+}
+
+
 /*MEDIA QUERIES*/
 
 @media (max-width: 992px) {

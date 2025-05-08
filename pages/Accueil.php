@@ -1,13 +1,13 @@
 <?php
 require_once "../php/functions.php";
 session_start();
-$user = checkIfUnlogged("../index.php");
-$greeting = (date("H") >= 18 || date("H") < 6) ? "Bonsoir" : "Bonjour";
+$user = checkIfUnlogged(OUTSIDE_TO_INDEX_PATH);
+$greeting = (date("H") >= UNIVERSAL_6_PM || date("H") < UNIVERSAL_6_AM) ? "Bonsoir" : "Bonjour";
 $userEconomy = readOneEconomy($user['idUser']);
-
+$baseMoney = formatMoney($userEconomy["BaseMoney"]);
 
 ?>
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 
 <head>
@@ -48,7 +48,7 @@ $userEconomy = readOneEconomy($user['idUser']);
         </div>
         <div class="account-balance">
             <h3>Solde actuel</h3>
-            <p class="balance-amount"><?php echo $userEconomy["BaseMoney"] . " " . $user["currency"]?> </p>
+            <p class="balance-amount"><?= $baseMoney . " " . $user["currency"]?> </p>
         </div>
 
         <div class="main-content">

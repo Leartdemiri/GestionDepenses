@@ -5,7 +5,7 @@ require_once "../php/functions.php";
 header("Access-Control-Allow-Origin: *");
 
 //Security -- On est bien en POST?
-checkMethod("../index.php");
+checkMethod(OUTSIDE_TO_INDEX_PATH);
 
 // Security -- Est-ce que on est déja loggé?
 checkIfLogged("home/");
@@ -22,12 +22,12 @@ $password = $_POST["password"];
 $user = checkIfUserExist($email);
 if (!$user) {
     http_response_code(HTTP_STATUS_BAD_REQUEST);
-    header("Location: ../index.php?error=login_unexistant_user");
+    header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=login_unexistant_user");
     die("NoUser");
 }else{
     if(!password_verify($password, $user['Password'])){
         http_response_code(HTTP_STATUS_UNAUTHORIZED);
-        header("Location: ../index.php?error=wrong_login_password");
+        header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=wrong_login_password");
         die("WrongPwd");
     }
 }
@@ -46,6 +46,6 @@ try {
     header("Location: ./home/");
 } catch (Throwable $th) {
     http_response_code(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    header("Location: ../index.php?error=login_failed");
+    header("Location: .".OUTSIDE_TO_INDEX_PATH."?". ERROR_GET_KEY ."=login_failed");
     die("Erreur lors de la connexion.");
 }

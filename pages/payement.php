@@ -102,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="form-container">
         <h6>Gérer vos finances</h6>
-        <p>Solde actuel: <strong><?= number_format($currentBalance, 2, ".", " ") ?> CHF</strong></p>
+        <p style="color: white;">Solde actuel: <strong><?= number_format($currentBalance, 2, ".", " ") ?> CHF</strong></p>
 
         <?php if (isset($_GET['error'])): ?>
             <p style="color: red;"><?= htmlspecialchars($_GET['error']) ?></p>
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-group">
                 <input type="number" name="amount" class="form-style" placeholder="Montant" required min="0"
-                    step="0.01">
+                    step="0.01" max="999999999999999">
                 <i class="input-icon material-icons">attach_money</i>
             </div>
             <div class="form-group" id="expenseTypeGroup" style="display: none;">
