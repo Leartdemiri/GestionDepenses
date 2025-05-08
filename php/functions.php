@@ -134,6 +134,54 @@ function countDigits($number) {
 
 function internalServerErrorHandling(){
     http_response_code(HTTP_STATUS_BAD_REQUEST);
-    header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=internal_server_error");
+    header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=".ERROR_TYPE_SERVER);
+    exit();
+}
+
+
+/**
+ * Supprime une dépense par son ID.
+ *
+ * @param int $expenseId L'ID de la dépense à supprimer.
+ * @return bool Retourne true si la suppression a réussi, false sinon.
+ */
+function deleteExpense(int $expenseId, int $userId): bool {
+    try {
+        $db = DataBase::db();
+        // Vérifiez si la dépense appartient à l'utilisateur
+        $checkStmt = $db->prepare("
+            SELECT sp.idSpending
+            FROM spending sp
+            JOIN economy e ON sp.idEconomy = e.idEconomy
+            WHERE sp.idSpending = :idSpending AND e.idUser = :idUser
+        ");
+        $checkStmt->execute([':idSpending' => $expenseId, ':idUser' => $userId]);
+        if (!$checkStmt->fetch()) {
+            error_log("Tentative de suppression non autorisée pour l'ID de dépense : $expenseId");
+            return false;
+        }
+
+        // Supprimez la dépense
+        $stmt = $db->prepare("DELETE FROM spending WHERE idSpending = :idSpending");
+        $stmt->bindParam(':idSpending', $expenseId, PDO::PARAM_INT);
+        return $stmt->execute();
+    } catch (Throwable $e) {
+        error_log("Erreur lors de la suppression de la dépense : " . $e->getMessage());
+        return false;
+    }
+}
+
+if (isset($_POST['action']) && $_POST['action'] === 'deleteExpense') {
+    session_start();
+    $user = checkIfUnlogged(OUTSIDE_TO_INDEX_PATH);
+
+    $expenseId = filter_input(INPUT_POST, 'expenseId', FILTER_VALIDATE_INT);
+    error_log("Reçu pour suppression : expenseId = $expenseId");
+
+    if ($expenseId && deleteExpense($expenseId, $user['idUser'])) {
+        echo json_encode(['success' => true]);
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Impossible de supprimer la dépense.']);
+    }
     exit();
 }

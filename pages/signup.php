@@ -47,8 +47,7 @@ try {
 
     $user = checkIfUserExist($email);
     if (!$user || !isset($user["idUser"])) {
-        header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=internal_server_error");
-        exit();
+        internalServerErrorHandling();
     }
 
     $id = $user["idUser"];

@@ -15,6 +15,7 @@ const UNIVERSAL_6_AM = 6;
 
 const SESSION_TOKEN_KEY = "token";
 const ERROR_GET_KEY = "error";
+const ERROR_TYPE_SERVER = "internal_server_error";
 const OUTSIDE_TO_INDEX_PATH = "../index.php";
 
 // http error codes

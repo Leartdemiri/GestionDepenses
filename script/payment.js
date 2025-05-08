@@ -117,9 +117,45 @@ async function loadStats() {
                 const dateCell = document.createElement("td");
                 dateCell.textContent = exp.date;
 
+                // ✅ Ajoute une cellule pour le bouton Supprimer
+                const deleteCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Supprimer";
+                deleteButton.className = "btn-delete";
+                deleteButton.addEventListener("click", async () => {
+                    if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
+                        try {
+                            const response = await fetch("../php/functions.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: new URLSearchParams({
+                                    action: "deleteExpense",
+                                    expenseId: exp.idSpending
+                                })
+                            });
+
+                            const result = await response.json();
+                            if (result.success) {
+                                alert("Dépense supprimée avec succès.");
+                                location.reload(); // Recharge la page
+                            } else {
+                                alert(result.error || "Une erreur est survenue.");
+                            }
+                        } catch (err) {
+                            console.error("Erreur :", err);
+                            alert("Une erreur est survenue.");
+                        }
+                    }
+                });
+                deleteCell.appendChild(deleteButton);
+
+
                 row.appendChild(typeCell);
                 row.appendChild(amountCell);
                 row.appendChild(dateCell);
+                row.appendChild(deleteCell);
                 latestTable.appendChild(row);
             });
 

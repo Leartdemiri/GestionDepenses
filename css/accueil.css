@@ -205,6 +205,20 @@
     box-shadow: 0 0 12px var(--mainColor);
 }
 
+.btn-delete {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-delete:hover {
+    background-color: #e60000;
+}
+
 @media (max-width: 900px) {
     .main-content {
         flex-direction: column;

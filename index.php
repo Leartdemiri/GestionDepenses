@@ -22,113 +22,127 @@ checkIfLogged("home/");
 </head>
 
 <body>
-    <nav class="navbar">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="logo">UB<span>$</span></div>
-                <input type="checkbox" name="" id="click">
-                <label for="click" class="menu-btn">
-                    <i class="material-icons">menu</i>
-                </label>
-                <ul>
-                    <li><a href="#" class="active">Home</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-
-    <section>
-        <div class="container">
-            <div class="row full-screen align-items-center">
-                <div class="left">
-                    <span class="line"></span>
-                    <h2>UB<span>$</span> simplifie la gestion de vos finances. Suivez vos dépenses facilement et
-                        reprenez le contrôle.</h2>
+    <main>
+        <nav class="navbar">
+            <div class="container">
+                <div class="row justify-content-between align-items-center">
+                    <div class="logo">UB<span>$</span></div>
+                    <input type="checkbox" name="" id="click">
+                    <label for="click" class="menu-btn">
+                        <i class="material-icons">menu</i>
+                    </label>
+                    <ul>
+                        <li><a href="#" class="active">Home</a></li>
+                    </ul>
                 </div>
-                <div class="right">
-                    <div class="form">
-                        <div class="text-center">
-                            <h6><span>Connexion</span> <span>Inscription</span></h6>
-                            <input type="checkbox" class="checkbox" id="reg-log">
-                            <label for="reg-log"></label>
-                            <div class="card-3d-wrap">
-                                <div class="card-3d-wrapper">
-                                    <form id="card-front" action="login/" method="POST">
-                                        <div class="center-wrap">
-                                            <h4 class="heading">Se connecter</h4>
+            </div>
+        </nav>
 
-                                            <div class="form-group">
-                                                <input type="email" name="email" class="form-style"
-                                                    placeholder="Votre Email" autocomplete="off" required>
-                                                <i class="input-icon material-icons">alternate_email</i>
+        <section>
+            <div class="container">
+                <div class="row full-screen align-items-center">
+                    <div class="left">
+                        <span class="line"></span>
+                        <h2>UB<span>$</span> simplifie la gestion de vos finances. Suivez vos dépenses facilement et
+                            reprenez le contrôle.</h2>
+                    </div>
+                    <div class="right">
+                        <div class="form">
+                            <div class="text-center">
+                                <h6><span>Connexion</span> <span>Inscription</span></h6>
+                                <input type="checkbox" class="checkbox" id="reg-log">
+                                <label for="reg-log"></label>
+                                <div class="card-3d-wrap">
+                                    <div class="card-3d-wrapper">
+                                        <form id="card-front" action="login/" method="POST">
+                                            <div class="center-wrap">
+                                                <h4 class="heading">Se connecter</h4>
+
+                                                <div class="form-group">
+                                                    <input type="email" name="email" class="form-style"
+                                                        placeholder="Votre Email" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">alternate_email</i>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="password" name="password" class="form-style"
+                                                        placeholder="Votre Mot De Passe" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">lock</i>
+                                                </div>
+
+                                                <?php displayFormErrors(); ?>
+
+
+                                                <!-- Bouton de connexion Google -->
+                                                <div id="g_id_onload" data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"
+                                                    data-context="signin" data-ux_mode="popup"
+                                                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                                                </div>
+                                                <div class="g_id_signin" data-type="standard" data-shape="rectangular"
+                                                    data-theme="outline" data-text="sign_in_with" data-size="large"
+                                                    data-logo_alignment="left">
+                                                </div>
+
+                                                <button type="submit" class="btn">Connexion</button>
+
                                             </div>
+                                        </form>
 
-                                            <div class="form-group">
-                                                <input type="password" name="password" class="form-style"
-                                                    placeholder="Votre Mot De Passe" autocomplete="off" required>
-                                                <i class="input-icon material-icons">lock</i>
+
+
+                                        <form id="card-back" action="signup/" method="POST">
+                                            <div class="center-wrap">
+                                                <h4 class="heading">S'inscrire</h4>
+
+                                                <div class="form-group">
+                                                    <input type="text" name="firstname" class="form-style"
+                                                        placeholder="Votre Prénom" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">perm_identity</i>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="text" name="lastname" class="form-style"
+                                                        placeholder="Votre Nom" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">perm_identity</i>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="email" name="email" class="form-style"
+                                                        placeholder="Votre Email" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">alternate_email</i>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <input type="password" name="password" class="form-style"
+                                                        placeholder="Votre Mot De Passe" autocomplete="off" required>
+                                                    <i class="input-icon material-icons">lock</i>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <select name="selectCurrency" id="selectCurrency" class="form-style"
+                                                        required>
+                                                        <option value="" disabled selected>Choisir une Devise</option>
+                                                        <option value="CHF">CHF</option>
+                                                        <option value="EUR">EUR</option>
+                                                        <option value="USD">USD</option>
+                                                    </select>
+                                                    <i class="input-icon material-icons">attach_money</i>
+                                                </div>
+
+                                                <?php displayFormErrors(); ?>
+
+                                                <button type="submit" class="btn">Inscription</button>
                                             </div>
-
-                                            <?php displayFormErrors(); ?>
-
-                                            <button type="submit" class="btn">Connexion</button>
-                                        </div>
-                                    </form>
-
-
-
-                                    <form id="card-back" action="signup/" method="POST">
-                                        <div class="center-wrap">
-                                            <h4 class="heading">S'inscrire</h4>
-
-                                            <div class="form-group">
-                                                <input type="text" name="firstname" class="form-style"
-                                                    placeholder="Votre Prénom" autocomplete="off" required>
-                                                <i class="input-icon material-icons">perm_identity</i>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="text" name="lastname" class="form-style"
-                                                    placeholder="Votre Nom" autocomplete="off" required>
-                                                <i class="input-icon material-icons">perm_identity</i>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="email" name="email" class="form-style"
-                                                    placeholder="Votre Email" autocomplete="off" required>
-                                                <i class="input-icon material-icons">alternate_email</i>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <input type="password" name="password" class="form-style"
-                                                    placeholder="Votre Mot De Passe" autocomplete="off" required>
-                                                <i class="input-icon material-icons">lock</i>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <select name="selectCurrency" id="selectCurrency" class="form-style"
-                                                    required>
-                                                    <option value="" disabled selected>Choisir une Devise</option>
-                                                    <option value="CHF">CHF</option>
-                                                    <option value="EUR">EUR</option>
-                                                    <option value="USD">USD</option>
-                                                </select>
-                                                <i class="input-icon material-icons">attach_money</i>
-                                            </div>
-
-                                            <?php displayFormErrors(); ?>
-
-                                            <button type="submit" class="btn">Inscription</button>
-                                        </div>
-                                    </form>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
     <footer class="global-footer">
         <div class="container">
             <div class="footer-content">
@@ -141,6 +155,24 @@ checkIfLogged("home/");
             </div>
         </div>
     </footer>
+    <script>
+        function handleCredentialResponse(response) {
+            // Décoder le JWT pour récupérer les informations utilisateur
+            const data = jwt_decode(response.credential);
+
+            // Stocker les informations dans le stockage local
+            localStorage.setItem("userName", data.name);
+            localStorage.setItem("userEmail", data.email);
+
+            // Afficher un message de bienvenue
+            alert("Bienvenue " + data.name);
+
+            // Redirection vers la page d'accueil
+            window.location.href = "home/";
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 
 </html>
