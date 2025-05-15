@@ -11,7 +11,7 @@ const REQUIRED_TITLE_LENGTH = 3;
 const MINIMUM_PASS_LENGTH = 8;
 const ONE_THOUSAND_NUMERIC = 1000;
 const UNIVERSAL_6_PM = 18;
-const UNIVERSAL_6_AM = 6;
+const UNIVERSAL_6_AM = 6; 
 
 const SESSION_TOKEN_KEY = "token";
 const ERROR_GET_KEY = "error";

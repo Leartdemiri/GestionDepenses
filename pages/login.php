@@ -2,7 +2,45 @@
 
 require_once "../php/functions.php";
 
-header("Access-Control-Allow-Origin: *");
+// Vérifier si la requête est pour l'authentification Google
+if (isset($_GET['auth']) && $_GET['auth'] === 'google') {
+    // Désactiver les en-têtes de sécurité pour cette page
+    header("Cross-Origin-Opener-Policy: unsafe-none");
+    header("Cross-Origin-Embedder-Policy: unsafe-none");
+} else {
+    // Utiliser les en-têtes pour les autres pages
+    header("Cross-Origin-Opener-Policy: same-origin");
+    header("Cross-Origin-Embedder-Policy: require-corp");
+}
+
+
+
+
+// --- Gestion connexion Google ---
+if (isset($_POST['google_credential'])) {
+    $token = $_POST['google_credential'];
+    $client_id = '139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com';
+    $url = "https://oauth2.googleapis.com/tokeninfo?id_token=" . urlencode($token);
+    $data = json_decode(file_get_contents($url), true);
+
+    if ($data && isset($data['email']) && $data['aud'] === $client_id) {
+        $email = $data['email'];
+        $user = checkIfUserExist($email);
+        if (!$user) {
+            header("Location: ../index.php?error=login_unexistant_user");
+            exit();
+        }
+        $tokenSession = createToken();
+        updateUserToken($user["idUser"], $tokenSession);
+        session_start();
+        $_SESSION[SESSION_TOKEN_KEY] = $tokenSession;
+        header("Location: ../home/");
+        exit();
+    } else {
+        header("Location: ../index.php?error=google_login_failed");
+        exit();
+    }
+}
 
 //Security -- On est bien en POST?
 checkMethod(OUTSIDE_TO_INDEX_PATH);

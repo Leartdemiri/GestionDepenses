@@ -4,6 +4,8 @@ require "php/functions.php";
 session_start();
 checkIfLogged("home/");
 
+header("Cross-Origin-Opener-Policy: same-origin");
+header("Cross-Origin-Embedder-Policy: require-corp");
 
 ?>
 <!DOCTYPE html>
@@ -74,9 +76,11 @@ checkIfLogged("home/");
 
 
                                                 <!-- Bouton de connexion Google -->
-                                                <div id="g_id_onload" data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"
+                                                <div id="g_id_onload"
+                                                    data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"
                                                     data-context="signin" data-ux_mode="popup"
-                                                    data-callback="handleCredentialResponse" data-auto_prompt="false">
+                                                    data-callback="handleCredentialResponseForLogin"
+                                                    data-auto_prompt="false">
                                                 </div>
                                                 <div class="g_id_signin" data-type="standard" data-shape="rectangular"
                                                     data-theme="outline" data-text="sign_in_with" data-size="large"
@@ -129,6 +133,18 @@ checkIfLogged("home/");
                                                     <i class="input-icon material-icons">attach_money</i>
                                                 </div>
 
+                                                <!-- Bouton de connexion Google -->
+                                                <div id="g_id_onload"
+                                                    data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"
+                                                    data-context="signin" data-ux_mode="popup"
+                                                    data-callback="handleCredentialResponseForSignUp"
+                                                    data-auto_prompt="false">
+                                                </div>
+                                                <div class="g_id_signin" data-type="standard" data-shape="rectangular"
+                                                    data-theme="outline" data-text="sign_in_with" data-size="large"
+                                                    data-logo_alignment="left">
+                                                </div>
+
                                                 <?php displayFormErrors(); ?>
 
                                                 <button type="submit" class="btn">Inscription</button>
@@ -156,23 +172,45 @@ checkIfLogged("home/");
         </div>
     </footer>
     <script>
-        function handleCredentialResponse(response) {
-            // Décoder le JWT pour récupérer les informations utilisateur
-            const data = jwt_decode(response.credential);
+        function handleCredentialResponseForSignUp(response) {
+            // Récupère la localisation via une API publique
+            fetch('https://ipapi.co/json/')
+                .then(res => res.json())
+                .then(location => {
+                    const currency = location.currency || '';
+                    fetch('./pages/signup.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'google_credential=' + encodeURIComponent(response.credential) +
+                            '&currency=' + encodeURIComponent(currency)
+                    })
+                        .then(res => {
+                            if (res.redirected) {
+                                window.location.href = res.url;
+                            } else {
+                                return res.text();
+                            }
+                        })
+                        .catch(() => alert("Erreur lors de l'inscription Google"));
+                });
+        }
 
-            // Stocker les informations dans le stockage local
-            localStorage.setItem("userName", data.name);
-            localStorage.setItem("userEmail", data.email);
-
-            // Afficher un message de bienvenue
-            alert("Bienvenue " + data.name);
-
-            // Redirection vers la page d'accueil
-            window.location.href = "home/";
+        function handleCredentialResponseForLogin(response) {
+            // Envoie le token Google au serveur pour connexion
+            fetch('./pages/login.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'google_credential=' + encodeURIComponent(response.credential)
+            })
+                .then(res => {
+                    if (res.redirected) {
+                        window.location.href = res.url;
+                    } else {
+                        return res.text();
+                    }
+                })
+                .catch(() => alert("Erreur lors de la connexion Google"));
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jwt-decode/3.1.2/jwt-decode.min.js"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-</body>
-
-</html>

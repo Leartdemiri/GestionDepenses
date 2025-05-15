@@ -148,6 +148,7 @@ function internalServerErrorHandling(){
 function deleteExpense(int $expenseId, int $userId): bool {
     try {
         $db = DataBase::db();
+
         // Vérifiez si la dépense appartient à l'utilisateur
         $checkStmt = $db->prepare("
             SELECT sp.idSpending
@@ -156,15 +157,19 @@ function deleteExpense(int $expenseId, int $userId): bool {
             WHERE sp.idSpending = :idSpending AND e.idUser = :idUser
         ");
         $checkStmt->execute([':idSpending' => $expenseId, ':idUser' => $userId]);
+
+        // Si aucune dépense n'est trouvée, retournez false
         if (!$checkStmt->fetch()) {
-            error_log("Tentative de suppression non autorisée pour l'ID de dépense : $expenseId");
+            error_log("Tentative de suppression non autorisée pour l'ID de dépense : $expenseId par l'utilisateur : $userId");
             return false;
         }
 
         // Supprimez la dépense
-        $stmt = $db->prepare("DELETE FROM spending WHERE idSpending = :idSpending");
-        $stmt->bindParam(':idSpending', $expenseId, PDO::PARAM_INT);
-        return $stmt->execute();
+        $deleteStmt = $db->prepare("DELETE FROM spending WHERE idSpending = :idSpending");
+        $deleteStmt->bindParam(':idSpending', $expenseId, PDO::PARAM_INT);
+
+        // Retournez true si la suppression a réussi
+        return $deleteStmt->execute();
     } catch (Throwable $e) {
         error_log("Erreur lors de la suppression de la dépense : " . $e->getMessage());
         return false;

@@ -132,20 +132,20 @@ async function loadStats() {
                                 },
                                 body: new URLSearchParams({
                                     action: "deleteExpense",
-                                    expenseId: exp.idSpending
+                                    expenseId: exp.idSpending // Assurez-vous que `exp.idSpending` contient l'ID correct
                                 })
                             });
-
+                
                             const result = await response.json();
-                            if (result.success) {
+                            if (response.ok && result.success) {
                                 alert("Dépense supprimée avec succès.");
-                                location.reload(); // Recharge la page
+                                location.reload(); // Recharge la page pour mettre à jour la liste
                             } else {
-                                alert(result.error || "Une erreur est survenue.");
+                                alert(result.error || "Une erreur est survenue lors de la suppression.");
                             }
                         } catch (err) {
                             console.error("Erreur :", err);
-                            alert("Une erreur est survenue.");
+                            alert("Une erreur est survenue lors de la suppression.");
                         }
                     }
                 });
