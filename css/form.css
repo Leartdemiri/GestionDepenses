@@ -360,6 +360,7 @@ input[type="checkbox"] {
     display: grid;
     place-items: center;
     order: 2;
+    margin-top: 10rem;
   }
 
   .right {

@@ -4,8 +4,8 @@ require "php/functions.php";
 session_start();
 checkIfLogged("home/");
 
-header("Cross-Origin-Opener-Policy: same-origin");
 header("Cross-Origin-Embedder-Policy: require-corp");
+header("Cross-Origin-Opener-Policy: same-origin-allow-popups");
 
 ?>
 <!DOCTYPE html>
@@ -76,7 +76,7 @@ header("Cross-Origin-Embedder-Policy: require-corp");
 
 
                                                 <!-- Bouton de connexion Google -->
-                                                <div id="g_id_onload"
+                                                <div id="d_id_onload"
                                                     data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"
                                                     data-context="signin" data-ux_mode="popup"
                                                     data-callback="handleCredentialResponseForLogin"

@@ -117,6 +117,21 @@ async function loadStats() {
                 const dateCell = document.createElement("td");
                 dateCell.textContent = exp.date;
 
+                // ✅ Ajoute une cellule pour le bouton Modifier
+                const editCell = document.createElement("td");
+                const editButton = document.createElement("button");
+                editButton.textContent = "Modifier";
+                editButton.className = "btn-edit";
+                editButton.addEventListener("click", () => {
+                    const newAmount = prompt("Entrez le nouveau montant :", exp.amount);
+                    if (newAmount !== null && !isNaN(newAmount) && parseFloat(newAmount) > 0) {
+                        updateExpense(exp.expenseId, parseFloat(newAmount));
+                    } else {
+                        alert("Montant invalide.");
+                    }
+                });
+                editCell.appendChild(editButton);
+
                 // ✅ Ajoute une cellule pour le bouton Supprimer
                 const deleteCell = document.createElement("td");
                 const deleteButton = document.createElement("button");
@@ -132,29 +147,32 @@ async function loadStats() {
                                 },
                                 body: new URLSearchParams({
                                     action: "deleteExpense",
-                                    expenseId: exp.idSpending // Assurez-vous que `exp.idSpending` contient l'ID correct
+                                    expenseId: exp.expenseId
                                 })
                             });
-                
-                            const result = await response.json();
-                            if (response.ok && result.success) {
+
+                            const textResponse = await response.text();
+                            console.log("Réponse brute :", textResponse);
+
+                            const result = JSON.parse(textResponse);
+                            if (result.success) {
                                 alert("Dépense supprimée avec succès.");
-                                location.reload(); // Recharge la page pour mettre à jour la liste
+                                location.reload();
                             } else {
-                                alert(result.error || "Une erreur est survenue lors de la suppression.");
+                                alert(result.error || "Une erreur est survenue.");
                             }
                         } catch (err) {
                             console.error("Erreur :", err);
-                            alert("Une erreur est survenue lors de la suppression.");
+                            alert("Une erreur est survenue.");
                         }
                     }
                 });
                 deleteCell.appendChild(deleteButton);
 
-
                 row.appendChild(typeCell);
                 row.appendChild(amountCell);
                 row.appendChild(dateCell);
+                row.appendChild(editCell);
                 row.appendChild(deleteCell);
                 latestTable.appendChild(row);
             });
@@ -167,6 +185,34 @@ async function loadStats() {
 
     } catch (err) {
         console.error("Erreur de chargement des statistiques :", err);
+    }
+}
+
+
+async function updateExpense(expenseId, newAmount) {
+    try {
+        const response = await fetch("../php/functions.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+                action: "updateExpense",
+                expenseId: expenseId,
+                newAmount: newAmount
+            })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert("Dépense mise à jour avec succès.");
+            location.reload();
+        } else {
+            alert(result.error || "Une erreur est survenue.");
+        }
+    } catch (err) {
+        console.error("Erreur :", err);
+        alert("Une erreur est survenue.");
     }
 }
 
@@ -203,7 +249,7 @@ async function loadCategoryExpensesOnly() {
             if (displayed.length === 0) {
                 const row = document.createElement("tr");
                 const cell = document.createElement("td");
-                cell.colSpan = 3;
+                cell.colSpan = 5; // Ajustez pour inclure les colonnes des boutons
                 cell.textContent = "Aucune dépense trouvée.";
                 row.appendChild(cell);
                 tbody.appendChild(row);
@@ -224,9 +270,63 @@ async function loadCategoryExpensesOnly() {
                 const dateCell = document.createElement("td");
                 dateCell.textContent = exp.date;
 
+                // ✅ Ajoute une cellule pour le bouton Modifier
+                const editCell = document.createElement("td");
+                const editButton = document.createElement("button");
+                editButton.textContent = "Modifier";
+                editButton.className = "btn-edit";
+                editButton.addEventListener("click", () => {
+                    const newAmount = prompt("Entrez le nouveau montant :", exp.amount);
+                    if (newAmount !== null && !isNaN(newAmount) && parseFloat(newAmount) > 0) {
+                        updateExpense(exp.expenseId, parseFloat(newAmount));
+                    } else {
+                        alert("Montant invalide.");
+                    }
+                });
+                editCell.appendChild(editButton);
+
+                // ✅ Ajoute une cellule pour le bouton Supprimer
+                const deleteCell = document.createElement("td");
+                const deleteButton = document.createElement("button");
+                deleteButton.textContent = "Supprimer";
+                deleteButton.className = "btn-delete";
+                deleteButton.addEventListener("click", async () => {
+                    if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
+                        try {
+                            const response = await fetch("../php/functions.php", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/x-www-form-urlencoded"
+                                },
+                                body: new URLSearchParams({
+                                    action: "deleteExpense",
+                                    expenseId: exp.expenseId
+                                })
+                            });
+
+                            const textResponse = await response.text();
+                            console.log("Réponse brute :", textResponse);
+
+                            const result = JSON.parse(textResponse);
+                            if (result.success) {
+                                alert("Dépense supprimée avec succès.");
+                                location.reload();
+                            } else {
+                                alert(result.error || "Une erreur est survenue.");
+                            }
+                        } catch (err) {
+                            console.error("Erreur :", err);
+                            alert("Une erreur est survenue.");
+                        }
+                    }
+                });
+                deleteCell.appendChild(deleteButton);
+
                 row.appendChild(typeCell);
                 row.appendChild(amountCell);
                 row.appendChild(dateCell);
+                row.appendChild(editCell);
+                row.appendChild(deleteCell);
                 tbody.appendChild(row);
             });
 

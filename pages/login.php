@@ -2,16 +2,7 @@
 
 require_once "../php/functions.php";
 
-// Vérifier si la requête est pour l'authentification Google
-if (isset($_GET['auth']) && $_GET['auth'] === 'google') {
-    // Désactiver les en-têtes de sécurité pour cette page
-    header("Cross-Origin-Opener-Policy: unsafe-none");
-    header("Cross-Origin-Embedder-Policy: unsafe-none");
-} else {
-    // Utiliser les en-têtes pour les autres pages
-    header("Cross-Origin-Opener-Policy: same-origin");
-    header("Cross-Origin-Embedder-Policy: require-corp");
-}
+header("Access-Control-Allow-Origin: *");
 
 
 
@@ -60,12 +51,12 @@ $password = $_POST["password"];
 $user = checkIfUserExist($email);
 if (!$user) {
     http_response_code(HTTP_STATUS_BAD_REQUEST);
-    header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=login_unexistant_user");
+    header("Location: " . OUTSIDE_TO_INDEX_PATH . "?" . ERROR_GET_KEY . "=login_unexistant_user");
     die("NoUser");
-}else{
-    if(!password_verify($password, $user['Password'])){
+} else {
+    if (!password_verify($password, $user['Password'])) {
         http_response_code(HTTP_STATUS_UNAUTHORIZED);
-        header("Location: ".OUTSIDE_TO_INDEX_PATH."?".ERROR_GET_KEY."=wrong_login_password");
+        header("Location: " . OUTSIDE_TO_INDEX_PATH . "?" . ERROR_GET_KEY . "=wrong_login_password");
         die("WrongPwd");
     }
 }
@@ -73,7 +64,7 @@ if (!$user) {
 try {
     // Générer un nouveau token pour la session
     $token = createToken();
-    updateUserToken($user["idUser"],$token);
+    updateUserToken($user["idUser"], $token);
 
     // Démarrer une session et stocker le token
     session_start();
@@ -84,6 +75,6 @@ try {
     header("Location: ./home/");
 } catch (Throwable $th) {
     http_response_code(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-    header("Location: .".OUTSIDE_TO_INDEX_PATH."?". ERROR_GET_KEY ."=login_failed");
+    header("Location: ." . OUTSIDE_TO_INDEX_PATH . "?" . ERROR_GET_KEY . "=login_failed");
     die("Erreur lors de la connexion.");
 }

@@ -7,7 +7,8 @@ header('Content-Type: application/json');
 
 // === FONCTIONS ===
 
-function getUserByToken(string $token): ?array {
+function getUserByToken(string $token): ?array
+{
     try {
         $sql = "SELECT * FROM user WHERE Token = :token";
         $stmt = DataBase::dbRun($sql, [':token' => $token]);
@@ -18,7 +19,8 @@ function getUserByToken(string $token): ?array {
     }
 }
 
-function getMonthlyExpenses(int $userId): array {
+function getMonthlyExpenses(int $userId): array
+{
     try {
         $sql = "
             SELECT MONTH(sp.dateCreated) AS month, SUM(sp.amount) AS total
@@ -32,8 +34,8 @@ function getMonthlyExpenses(int $userId): array {
 
         $monthly = array_fill(1, 12, 0);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $mois = (int)$row['month'];
-            $total = (float)$row['total'];
+            $mois = (int) $row['month'];
+            $total = (float) $row['total'];
             if ($mois >= 1 && $mois <= 12) {
                 $monthly[$mois] = $total;
             }
@@ -46,7 +48,8 @@ function getMonthlyExpenses(int $userId): array {
     }
 }
 
-function getExpensesByType(int $userId): array {
+function getExpensesByType(int $userId): array
+{
     try {
         $sql = "
             SELECT st.Type, SUM(sp.amount) AS total
@@ -65,9 +68,11 @@ function getExpensesByType(int $userId): array {
     }
 }
 
-function getLatestExpenses(int $userId, int $limit = 10): array {
+function getLatestExpenses(int $userId, int $limit = 10): array
+{
     $sql = "
         SELECT 
+            sp.idSpending AS expenseId,
             st.Type AS title,
             sp.amount,
             u.currency,
@@ -81,7 +86,7 @@ function getLatestExpenses(int $userId, int $limit = 10): array {
         LIMIT :limit
     ";
 
-    $sql = str_replace(':limit', (int)$limit, $sql);
+    $sql = str_replace(':limit', (int) $limit, $sql);
 
     $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -108,9 +113,9 @@ if (!$user) {
 
 try {
     $response = [
-        'monthlyExpenses' => getMonthlyExpenses((int)$user['idUser']),
-        'expenseTypes' => getExpensesByType((int)$user['idUser']),
-        'latestExpenses' => getLatestExpenses((int)$user['idUser'])
+        'monthlyExpenses' => getMonthlyExpenses((int) $user['idUser']),
+        'expenseTypes' => getExpensesByType((int) $user['idUser']),
+        'latestExpenses' => getLatestExpenses((int) $user['idUser'])
     ];
     echo json_encode($response, JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {
