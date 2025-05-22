@@ -26,11 +26,11 @@ function getMonthlyExpenses(int $userId): array
             SELECT MONTH(sp.dateCreated) AS month, SUM(sp.amount) AS total
             FROM spending sp
             JOIN economy e ON sp.idEconomy = e.idEconomy
-            WHERE e.idUser = :userId
+            WHERE e.".USER_TABLE_ID." = :arg1
             GROUP BY MONTH(sp.dateCreated)
             ORDER BY MONTH(sp.dateCreated)
         ";
-        $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
+        $stmt = DataBase::dbRun($sql, [':arg1' => $userId]);
 
         $monthly = array_fill(1, 12, 0);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
@@ -56,7 +56,7 @@ function getExpensesByType(int $userId): array
             FROM spending sp
             JOIN spendTypes st ON sp.idSpendType = st.idSpendingType
             JOIN economy e ON sp.idEconomy = e.idEconomy
-            WHERE e.idUser = :userId
+            WHERE e.".USER_TABLE_ID." = :userId
             GROUP BY st.Type
             ORDER BY total DESC
         ";
@@ -80,8 +80,8 @@ function getLatestExpenses(int $userId, int $limit = 10): array
         FROM spending sp
         JOIN spendTypes st ON sp.idSpendType = st.idSpendingType
         JOIN economy e ON sp.idEconomy = e.idEconomy
-        JOIN user u ON e.idUser = u.idUser
-        WHERE e.idUser = :userId
+        JOIN user u ON e.".USER_TABLE_ID." = u.".USER_TABLE_ID."
+        WHERE e.".USER_TABLE_ID." = :userId
         ORDER BY sp.dateCreated DESC
         LIMIT :limit
     ";
@@ -112,10 +112,11 @@ if (!$user) {
 // === RÉPONSE JSON ===
 
 try {
+    $userId = (int) $user[USER_TABLE_ID];
     $response = [
-        'monthlyExpenses' => getMonthlyExpenses((int) $user['idUser']),
-        'expenseTypes' => getExpensesByType((int) $user['idUser']),
-        'latestExpenses' => getLatestExpenses((int) $user['idUser'])
+        'monthlyExpenses' => getMonthlyExpenses($userId),
+        'expenseTypes' => getExpensesByType($userId),
+        'latestExpenses' => getLatestExpenses($userId)
     ];
     echo json_encode($response, JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {

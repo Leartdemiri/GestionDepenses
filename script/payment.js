@@ -117,7 +117,7 @@ async function loadStats() {
                 const dateCell = document.createElement("td");
                 dateCell.textContent = exp.date;
 
-                // ✅ Ajoute une cellule pour le bouton Modifier
+                // Ajoute une cellule pour le bouton Modifier
                 const editCell = document.createElement("td");
                 const editButton = document.createElement("button");
                 editButton.textContent = "Modifier";
@@ -132,7 +132,7 @@ async function loadStats() {
                 });
                 editCell.appendChild(editButton);
 
-                // ✅ Ajoute une cellule pour le bouton Supprimer
+                // Ajoute une cellule pour le bouton Supprimer
                 const deleteCell = document.createElement("td");
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Supprimer";
@@ -177,7 +177,7 @@ async function loadStats() {
                 latestTable.appendChild(row);
             });
 
-            // ✅ Ajout du total global
+            // Ajout du total global
             if (totalDisplay) {
                 totalDisplay.textContent = `Total : ${total.toFixed(2)} CHF`;
             }
@@ -270,7 +270,7 @@ async function loadCategoryExpensesOnly() {
                 const dateCell = document.createElement("td");
                 dateCell.textContent = exp.date;
 
-                // ✅ Ajoute une cellule pour le bouton Modifier
+                // Ajoute une cellule pour le bouton Modifier
                 const editCell = document.createElement("td");
                 const editButton = document.createElement("button");
                 editButton.textContent = "Modifier";
@@ -285,7 +285,7 @@ async function loadCategoryExpensesOnly() {
                 });
                 editCell.appendChild(editButton);
 
-                // ✅ Ajoute une cellule pour le bouton Supprimer
+                // Ajoute une cellule pour le bouton Supprimer
                 const deleteCell = document.createElement("td");
                 const deleteButton = document.createElement("button");
                 deleteButton.textContent = "Supprimer";
@@ -325,7 +325,11 @@ async function loadCategoryExpensesOnly() {
                 row.appendChild(typeCell);
                 row.appendChild(amountCell);
                 row.appendChild(dateCell);
-                row.appendChild(editCell);
+/**
+ * Summary of getMonthlyExpenses
+ * @param int $userId
+ * @return array<float|int>
+ */
                 row.appendChild(deleteCell);
                 tbody.appendChild(row);
             });

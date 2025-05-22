@@ -9,16 +9,15 @@ $user = checkIfUnlogged("../index.php");
 $SpendTypes = readAllSpendTypes();
 
 // Récupération des données économiques de l'utilisateur
-$economy = readOneEconomy($user['idUser']);
+$economy = readOneEconomy($user[USER_TABLE_ID]);
 if (!$economy) {
     try {
         DataBase::begin();
-        createEconomy(0, 0, 0, 0, $user['idUser']);
+        createEconomy(0, 0, 0, $user[USER_TABLE_ID]);
         DataBase::commit();
-        $economy = readOneEconomy($user['idUser']);
+        $economy = readOneEconomy($user[USER_TABLE_ID]);
     } catch (Throwable $e) {
         DataBase::rollback();
-        error_log("Erreur lors de la création de l'économie : " . $e->getMessage());
         header("Location: payement.php?error=economy_creation_failed");
         exit();
     }
@@ -53,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $economy['monthlyLimit'],
             $economy['spendAim'],
             $newBalance,
-            $user['idUser']
+            $user[USER_TABLE_ID]
         );
 
         DataBase::commit();

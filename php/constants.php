@@ -17,6 +17,7 @@ const SESSION_TOKEN_KEY = "token";
 const ERROR_GET_KEY = "error";
 const ERROR_TYPE_SERVER = "internal_server_error";
 const OUTSIDE_TO_INDEX_PATH = "../index.php";
+const USER_TABLE_ID = "idUser";
 
 // http error codes
 const HTTP_STATUS_OK = 200;

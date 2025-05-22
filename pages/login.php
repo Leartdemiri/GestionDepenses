@@ -22,7 +22,7 @@ if (isset($_POST['google_credential'])) {
             exit();
         }
         $tokenSession = createToken();
-        updateUserToken($user["idUser"], $tokenSession);
+        updateUserToken($user[USER_TABLE_ID], $tokenSession);
         session_start();
         $_SESSION[SESSION_TOKEN_KEY] = $tokenSession;
         header("Location: ../home/");
@@ -64,7 +64,7 @@ if (!$user) {
 try {
     // Générer un nouveau token pour la session
     $token = createToken();
-    updateUserToken($user["idUser"], $token);
+    updateUserToken($user[USER_TABLE_ID], $token);
 
     // Démarrer une session et stocker le token
     session_start();

@@ -1,9 +1,11 @@
 <?php
 require_once "../php/functions.php";
+
+// - Verification if user isn't logged, if he isnt return to login page
 session_start();
 $user = checkIfUnlogged(OUTSIDE_TO_INDEX_PATH);
 $greeting = (date("H") >= UNIVERSAL_6_PM || date("H") < UNIVERSAL_6_AM) ? "Bonsoir" : "Bonjour";
-$userEconomy = readOneEconomy($user['idUser']);
+$userEconomy = readOneEconomy($user[USER_TABLE_ID]);
 $baseMoney = formatMoney($userEconomy["BaseMoney"]);
 
 ?>

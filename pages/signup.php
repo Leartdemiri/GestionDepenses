@@ -35,7 +35,7 @@ if (isset($_POST['google_credential'])) {
             try {
                 DataBase::begin();
                 $user = checkIfUserExist($email);
-                createEconomy("0", "0", "0", $user["idUser"]);
+                createEconomy("0", "0", "0", $user[USER_TABLE_ID]);
                 DataBase::commit();
             } catch (Throwable $e) {
                 DataBase::rollback();
@@ -45,7 +45,7 @@ if (isset($_POST['google_credential'])) {
         } else {
             $user = checkIfUserExist($email);
             $tokenSession = createToken();
-            updateUserToken($user["idUser"], $tokenSession);
+            updateUserToken($user[USER_TABLE_ID], $tokenSession);
         }
 
         session_start();
@@ -101,11 +101,11 @@ try {
     DataBase::begin();
 
     $user = checkIfUserExist($email);
-    if (!$user || !isset($user["idUser"])) {
+    if (!$user || !isset($user[USER_TABLE_ID])) {
         internalServerErrorHandling();
     }
 
-    $id = $user["idUser"];
+    $id = $user[USER_TABLE_ID];
     createEconomy("0", "0", "0", $id);
     $ecoOK = true;
 
@@ -118,7 +118,6 @@ try {
 // Final check and redirect
 if ($userOK && $ecoOK) {
     session_start();
-    $_SESSION[SESSION_TOKEN_KEY] = null;
     $_SESSION[SESSION_TOKEN_KEY] = $token;
     header("Location: ../home/");
     exit();

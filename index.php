@@ -1,6 +1,7 @@
 <?php
 require "php/functions.php";
 
+// - Check if user is already connected, if he is login back to home
 session_start();
 checkIfLogged("home/");
 
