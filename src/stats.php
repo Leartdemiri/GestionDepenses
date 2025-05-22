@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once "../php/database.php";
+require_once "database.php";
 
 // Toujours déclarer le type de contenu JSON
 header('Content-Type: application/json');

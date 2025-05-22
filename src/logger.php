@@ -1,4 +1,4 @@
-    <?php
+<?php
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
@@ -9,9 +9,9 @@ function getLogger(): Logger {
 
     if (!$logger) {
         $logger = new Logger('UB$');
-        $logPath = __DIR__ . '/../logs/app.log';
+        $logPath = __DIR__ . '/logs/app.log';
         $logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
     }
-
+    
     return $logger;
 }

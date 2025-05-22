@@ -32,7 +32,7 @@ function slideUp(el, duration = 200) {
 
 async function loadStats() {
     try {
-        const response = await fetch("../php/stats.php", {
+        const response = await fetch("../../src/stats.php", {
             credentials: 'include'
         });
 
@@ -140,7 +140,7 @@ async function loadStats() {
                 deleteButton.addEventListener("click", async () => {
                     if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
                         try {
-                            const response = await fetch("../php/functions.php", {
+                            const response = await fetch("../../src/functions.php", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/x-www-form-urlencoded"
@@ -191,7 +191,7 @@ async function loadStats() {
 
 async function updateExpense(expenseId, newAmount) {
     try {
-        const response = await fetch("../php/functions.php", {
+        const response = await fetch("../../php/functions.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -222,7 +222,7 @@ async function loadCategoryExpensesOnly() {
     if (!type) return;
 
     try {
-        const response = await fetch("../php/stats.php", {
+        const response = await fetch("../../src/stats.php", {
             credentials: 'include'
         });
 
@@ -293,7 +293,7 @@ async function loadCategoryExpensesOnly() {
                 deleteButton.addEventListener("click", async () => {
                     if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
                         try {
-                            const response = await fetch("../php/functions.php", {
+                            const response = await fetch("../../php/functions.php", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/x-www-form-urlencoded"

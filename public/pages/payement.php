@@ -1,6 +1,9 @@
 <?php
-require_once '../php/functions.php';
+require_once '../../src/functions.php';
 session_start();
+
+require_once '../../src/logger.php';
+$logger = getLogger();
 
 // Vérification de l'utilisateur connecté
 $user = checkIfUnlogged("../index.php");
@@ -34,16 +37,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Données invalides. Veuillez remplir tous les champs correctement.");
         }
 
+        $oldBalance = $currentBalance;
         DataBase::begin();
 
         if ($actionType === 'addExpense' && $spendType) {
-            $newBalance = $currentBalance - $amount;
+            $newBalance = $oldBalance - $amount;
             if ($newBalance < 0) {
                 throw new Exception("Solde insuffisant pour effectuer cette dépense.");
             }
             createSpending($economy['idEconomy'], $spendType, $amount);
+            $logger->info("Dépense ajoutée", [
+                'userId' => $user[USER_TABLE_ID],
+                'spendType' => $spendType,
+                'amount' => $amount
+            ]);
         } elseif ($actionType === 'addMoney') {
-            $newBalance = $currentBalance + $amount;
+            $newBalance = $oldBalance + $amount;
+            $logger->info("Argent ajouté", [
+                'userId' => $user[USER_TABLE_ID],
+                'amount' => $amount
+            ]);
         } else {
             throw new Exception("Type d'action invalide ou type de dépense manquant.");
         }
@@ -56,14 +69,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         DataBase::commit();
+        $logger->info("Économie mise à jour", [
+            'userId' => $user[USER_TABLE_ID],
+            'oldBalance' => $oldBalance,
+            'newBalance' => $newBalance
+        ]);
         header("Location: payement.php?success=1");
         exit();
     } catch (Throwable $e) {
         DataBase::rollback();
-        error_log("Erreur lors de la mise à jour du solde : " . $e->getMessage());
+        $logger->error("Erreur lors de la mise à jour du solde", [
+            'userId' => $user[USER_TABLE_ID],
+            'oldBalance' => $currentBalance,
+            'amount' => $amount ?? null,
+            'actionType' => $actionType ?? null,
+            'message' => $e->getMessage()
+        ]);
         header("Location: payement.php?error=" . urlencode($e->getMessage()));
         exit();
     }
+
+
 }
 ?>
 <!DOCTYPE html>
@@ -101,7 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="form-container">
         <h6>Gérer vos finances</h6>
-        <p style="color: white;">Solde actuel: <strong><?= number_format($currentBalance, 2, ".", " ") ?> CHF</strong></p>
+        <p style="color: white;">Solde actuel: <strong><?= number_format($currentBalance, 2, ".", " ") ?> CHF</strong>
+        </p>
 
         <?php if (isset($_GET['error'])): ?>
             <p style="color: red;"><?= htmlspecialchars($_GET['error']) ?></p>
@@ -119,8 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <i class="input-icon material-icons">swap_horiz</i>
             </div>
             <div class="form-group">
-                <input type="number" name="amount" class="form-style" placeholder="Montant" required min="0"
-                    step="0.01" max="999999999999999">
+                <input type="number" name="amount" class="form-style" placeholder="Montant" required min="0" step="0.01"
+                    max="999999999999999">
                 <i class="input-icon material-icons">attach_money</i>
             </div>
             <div class="form-group" id="expenseTypeGroup" style="display: none;">

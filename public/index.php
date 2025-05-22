@@ -1,5 +1,5 @@
 <?php
-require "php/functions.php";
+require "../src/functions.php";
 
 // - Check if user is already connected, if he is login back to home
 session_start();
@@ -74,8 +74,7 @@ header("Cross-Origin-Opener-Policy: same-origin-allow-popups");
                                                 </div>
 
                                                 <?php displayFormErrors(); ?>
-
-
+                                                
                                                 <!-- Bouton de connexion Google -->
                                                 <div id="d_id_onload"
                                                     data-client_id="139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com"

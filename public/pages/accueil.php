@@ -1,5 +1,5 @@
 <?php
-require_once "../php/functions.php";
+require_once "../../src/functions.php";
 
 // - Verification if user isn't logged, if he isnt return to login page
 session_start();
