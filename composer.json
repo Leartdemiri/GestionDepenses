@@ -1,0 +1,20 @@
+{
+    "name": "leart-dmr2/depenses",
+    "description": "Gestion de dépenses",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "LeartDmr2\\Depenses\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Leart Demiri",
+            "email": "leart.dmr2@eduge.ch"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "monolog/monolog": "^3.9"
+    }
+}
