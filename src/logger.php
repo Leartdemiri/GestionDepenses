@@ -5,25 +5,25 @@ use Monolog\Handler\StreamHandler;
 require_once __DIR__ . '/../vendor/autoload.php';
 
 /**
- * Fournit une instance unique du logger Monolog pour tout le projet.
+ * Provides a single instance of the Monolog logger for the entire project.
  * 
- * - Le logger est instancié une seule fois (pattern singleton via `static $logger`)
- * - Les logs sont enregistrés dans un fichier `logs/app.log` avec le niveau DEBUG
+ * - The logger is instantiated only once (singleton pattern via `static $logger`)
+ * - Logs are saved in a `logs/app.log` file with DEBUG level
  *
- * @return Logger L'instance de logger Monolog configurée
+ * @return Logger The configured Monolog logger instance
  */
 function getLogger(): Logger {
-    // Utilisation d'une variable statique pour s'assurer qu'on ne crée qu'un seul logger
+    // Use a static variable to ensure the logger is created only once
     static $logger = null;
 
     if (!$logger) {
-        // Création du logger avec un nom symbolique "UB$"
+        // Create the logger with a symbolic name "UB$"
         $logger = new Logger('UB$');
 
-        // Définition du chemin du fichier de log
+        // Define the path to the log file
         $logPath = __DIR__ . '/logs/app.log';
 
-        // Ajout d’un handler pour écrire dans le fichier log avec le niveau DEBUG minimum
+        // Add a handler to write to the log file with a minimum level of DEBUG
         $logger->pushHandler(new StreamHandler($logPath, Logger::DEBUG));
     }
     

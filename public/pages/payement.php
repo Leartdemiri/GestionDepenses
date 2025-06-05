@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $spendType = filter_input(INPUT_POST, 'spendType', FILTER_VALIDATE_INT);
     try {
         if (!$actionType || $amount === null || $amount <= 0) {
-            throw new Exception("Invalid data. Please fill all fields correctly.");
+            throw new Exception("Données invalide, veuillez entrez des données valides");
         }
 
         $oldBalance = $currentBalance;
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($actionType === 'addExpense' && $spendType) {
             $newBalance = $oldBalance - $amount;
             if ($newBalance < 0) {
-                throw new Exception("Insufficient balance to make this expense.");
+                throw new Exception("Vous n'avez pas assez d'argent pour faire cette dépense");
             }
             createSpending($economy['idEconomy'], $spendType, $amount);
             $logger->info("Expense added", [
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'amount' => $amount
             ]);
         } else {
-            throw new Exception("Invalid action type or missing expense type.");
+            throw new Exception("Actions invalide ou type de dépense invalide");
         }
 
         updateEconomy(
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="form-group">
                 <input type="number" name="amount" class="form-style" placeholder="Montant" required min="0" step="0.01"
-                    max="999999999999999">
+                    max="9999999999">
                 <i class="input-icon material-icons">attach_money</i>
             </div>
             <div class="form-group" id="expenseTypeGroup" style="display: none;">
