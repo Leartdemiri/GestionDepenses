@@ -9,7 +9,7 @@ $userEconomy = readOneEconomy($user[USER_TABLE_ID]);
 $baseMoney = formatMoney($userEconomy["BaseMoney"]);
 
 ?>
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -34,7 +34,10 @@ $baseMoney = formatMoney($userEconomy["BaseMoney"]);
                     <i class="material-icons">menu</i>
                 </label>
                 <ul>
-                    <li><div class="welcome-name"><?= $greeting ?>, <?= htmlspecialchars($user["Firstname"]) ?> <?= htmlspecialchars($user["Lastname"]) ?></div></li>
+                    <li>
+                        <div class="welcome-name"><?= $greeting ?>, <?= htmlspecialchars($user["Firstname"]) ?>
+                            <?= htmlspecialchars($user["Lastname"]) ?></div>
+                    </li>
                     <li><a href="" class="active">Home</a></li>
                     <li><a href="../payement/" class="active">Dépense</a></li>
                     <li><a href="../logout/" class="active">LogOut</a></li>
@@ -50,15 +53,15 @@ $baseMoney = formatMoney($userEconomy["BaseMoney"]);
         </div>
         <div class="account-balance">
             <h3>Solde actuel</h3>
-            <p class="balance-amount"><?= $baseMoney . " " . $user["currency"]?> </p>
+            <p class="balance-amount"><?= $baseMoney . " " . $user["currency"] ?> </p>
         </div>
 
         <div class="main-content">
             <section class="dashboard">
                 <div class="container">
                     <div class="row">
-                    <div class="latest-expenses">
-                        <h2 class="section-title">Dernières Dépenses</h2>
+                        <div class="latest-expenses">
+                            <h2 class="section-title">Dernières Dépenses</h2>
                             <table class="expenses-table">
                                 <thead>
                                     <tr>
@@ -66,7 +69,8 @@ $baseMoney = formatMoney($userEconomy["BaseMoney"]);
                                         <th>Montant</th>
                                         <th>
                                             Date
-                                            <i class="fa-solid fa-filter" id="monthFilterIcon" style="cursor: pointer; margin-left: 5px;"></i>
+                                            <i class="fa-solid fa-filter" id="monthFilterIcon"
+                                                style="cursor: pointer; margin-left: 5px;"></i>
                                             <select id="monthFilter" style="display: none; margin-left: 5px;">
                                                 <option value="">Tous</option>
                                                 <option value="01">Janvier</option>
@@ -86,12 +90,12 @@ $baseMoney = formatMoney($userEconomy["BaseMoney"]);
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   
+
                                 </tbody>
                             </table>
-                        <div id="totalAmount" style="text-align: right; margin-top: 10px; font-weight: bold;">
-                            Total : 0.00 CHF
-                        </div>
+                            <div id="totalAmount" style="text-align: right; margin-top: 10px; font-weight: bold;">
+                                Total : 0.00 CHF
+                            </div>
                         </div>
                     </div>
                 </div>

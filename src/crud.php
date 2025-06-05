@@ -7,14 +7,17 @@ Fichier crud pour chaque classe de la base de donnée
 /* ==== | USER | ==== */
 /* ======================================================================================================================================================================*/
 
-///
-/// Créer un utilisateur dans la base de donnée et le login immédiatement en lui créant un token
-/// <param> string $email       <param> : Paramètre en STRING, Email de l'utilisateur
-/// <param> string $firstname   <param> : Paramètre en STRING, Prénom de l'utilisateur
-/// <param> string $lastname    <param> : Paramètre en STRING, Nom de famille de l'utilisateur
-/// <param> string $token       <param> : Paramètre en STRING, Le token de de l'utilisateur qui permet de savoir qui est si on est connecté
-/// <param> string $password    <param> : Paramètre en STRING, Mot de pass de l'utilisateur ( préférablement hashé en BCrypt)
-/// <param> string $currency    <param> : Paramètre en STRING, Currency utilisé et préférée de l'utilisateur
+/**
+ * Creates a user in the database and logs them in immediately by generating a token.
+ *
+ * @param string $email     Email of the user.
+ * @param string $firstname First name of the user.
+ * @param string $lastname  Last name of the user.
+ * @param string $token     Token used to identify the logged-in user.
+ * @param string $password  User's password (preferably hashed with Bcrypt).
+ * @param string $currency  Preferred currency of the user.
+ * @return array|null       The inserted user data or null.
+ */
 function createUser(string $email, string $firstname, string $lastname, string $token, string $password, string $currency)
 {
     $sql = "INSERT INTO user (email, Firstname, Lastname, Token, Password, currency) VALUES (:arg1, :arg2, :arg3, :arg4, :arg5, :arg6)";
@@ -30,8 +33,11 @@ function createUser(string $email, string $firstname, string $lastname, string $
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-///
-/// Récupère toutes les données de tout les utilisateurs de la base de donnée
+/**
+ * Retrieves all users from the database.
+ *
+ * @return array List of all users.
+ */
 function readAllUsers()
 {
     $sql = "SELECT " . USER_TABLE_ID . ", email, Firstname, Lastname, Token, Password, currency FROM user";
@@ -40,8 +46,12 @@ function readAllUsers()
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-/// Récupère toutes les données d'un seul utilisateur de la base de donnée
-/// <param> int $id <param> : Paramètre en INT, id de l'utilisateur que l'ont veux récupérer
+/**
+ * Retrieves one user by their ID from the database.
+ *
+ * @param int $id ID of the user to retrieve.
+ * @return array|null User data or null if not found.
+ */
 function readOneUserByID(int $id)
 {
     $sql = "SELECT " . USER_TABLE_ID . ", email, Firstname, Lastname, Token, Password, currency FROM user WHERE " . USER_TABLE_ID . " = :arg1";
@@ -50,8 +60,12 @@ function readOneUserByID(int $id)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-/// Récupère toutes les données d'un seul utilisateur de la base de donnée
-/// <param> string $token <param> : Paramètre en STRING, Token de l'utilisateur que l'ont veux récupérer
+/**
+ * Retrieves one user by their token from the database.
+ *
+ * @param string $token Token of the user to retrieve.
+ * @return array|null User data or null if not found.
+ */
 function readOneUserByToken(string $token)
 {
     $sql = "SELECT " . USER_TABLE_ID . ", email, Firstname, Lastname, Token, Password, currency FROM user WHERE Token = :arg1";
@@ -60,8 +74,12 @@ function readOneUserByToken(string $token)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-/// Est-ce que un utilisateur éxiste?
-/// <param> string $email <param> : Paramètre en STRING, email de l'utilisateur que l'ont veux récupérer
+/**
+ * Checks if a user exists based on their email.
+ *
+ * @param string $email Email of the user to check.
+ * @return array|null User data or null if not found.
+ */
 function checkIfUserExist(string $email)
 {
     $sql = "SELECT " . USER_TABLE_ID . ", Password, Token FROM user WHERE email = :arg1";
@@ -70,15 +88,18 @@ function checkIfUserExist(string $email)
     return $statement->fetch(PDO::FETCH_ASSOC) ?? null;
 }
 
-///
-/// Créer un utilisateur dans la base de donnée et le login immédiatement en lui créant un token
-/// <param> int        $id          <param> : Paramètre en INT, id de l'utilisateur que l'ont veux modifier
-/// <param> string     $email       <param> : Paramètre en STRING, Email de l'utilisateur
-/// <param> string     $firstname   <param> : Paramètre en STRING, Prénom de l'utilisateur
-/// <param> string     $lastname    <param> : Paramètre en STRING, Nom de famille de l'utilisateur
-/// <param> string     $token       <param> : Paramètre en STRING, Le token de de l'utilisateur qui permet de savoir qui est si on est connecté
-/// <param> string     $password    <param> : Paramètre en STRING, Mot de pass de l'utilisateur ( préférablement hashé en BCrypt)
-/// <param> string     $currency    <param> : Paramètre en STRING, Currency utilisé et préférée de l'utilisateur
+/**
+ * Updates a user's data in the database.
+ *
+ * @param int    $id        ID of the user to update.
+ * @param string $email     Email of the user.
+ * @param string $firstname First name of the user.
+ * @param string $lastname  Last name of the user.
+ * @param string $token     Token to associate with the user.
+ * @param string $password  User's password (preferably hashed with Bcrypt).
+ * @param string $currency  Preferred currency of the user.
+ * @return array|null       Updated user data or null.
+ */
 function updateUser(int $id, string $email, string $firstname, string $lastname, string $token, string $password, string $currency)
 {
     $sql = "UPDATE INTO user 
@@ -97,10 +118,13 @@ function updateUser(int $id, string $email, string $firstname, string $lastname,
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-///
-/// Mettre a jour le token d'un utilisateur via son ID dans la base de donnée
-/// <param> int     $id          <param> : Paramètre en INT, id de l'utilisateur que l'ont veux modifier
-/// <param> string  $token       <param> : Paramètre en STRING, Modifier le token de l'utilisateur concerné ( peut etre null )
+/**
+ * Updates the token of a user by their ID.
+ *
+ * @param int    $id    ID of the user.
+ * @param string $token New token to assign (can be null).
+ * @return array|null   Updated user data or null.
+ */
 function updateUserToken(int $id, string $token)
 {
     $sql = "UPDATE user SET Token = :arg1 WHERE " . USER_TABLE_ID . " = :arg2";
@@ -112,9 +136,12 @@ function updateUserToken(int $id, string $token)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-///
-/// Supprime un utilisateur de la base de donnée
-/// <param> int $id <param> : Paramètre en INT, id de l'utilisateur que l'ont veux supprimer
+/**
+ * Deletes a user from the database by their ID.
+ *
+ * @param int $id ID of the user to delete.
+ * @return array|null Deleted user data or null.
+ */
 function deleteUser(int $id)
 {
     $sql = "DELETE FROM user WHERE " . USER_TABLE_ID . " = :arg1";
@@ -123,16 +150,21 @@ function deleteUser(int $id)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+
 /* ======================================================================================================================================================================*/
 /* ==== | ECONOMY | ==== */
 /* ======================================================================================================================================================================*/
 
-///
-/// Créer une économie dédiée à un utilisateur
-/// <param> string $monthlyLimit <param> :  Limite mensuelle fixée
-/// <param> string $spendAim     <param> :  Objectif de dépense
-/// <param> string $BaseMoney    <param> :  Argent de base
-/// <param> int    $id           <param> :  ID de l'utilisateur
+/**
+ * Create an economy entry for a user.
+ *
+ * @param string $monthlyLimit Monthly limit set.
+ * @param string $spendAim     Spending goal.
+ * @param string $BaseMoney    Starting amount of money.
+ * @param int    $id           User ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function createEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
 {
     $sql = "INSERT INTO economy (" . USER_TABLE_ID . ", monthlyLimit, spendAim, BaseMoney) 
@@ -147,8 +179,11 @@ function createEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney
     return $statement ? true : false;
 }
 
-///
-/// Lire toutes les économies
+/**
+ * Read all economy entries.
+ *
+ * @return array Array of all economies.
+ */
 function readEconomies()
 {
     $sql = "SELECT idEconomy, " . USER_TABLE_ID . ", monthlyLimit, spendAim, BaseMoney FROM economy";
@@ -157,9 +192,13 @@ function readEconomies()
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
-///
-/// Lire une économie dédiée à un utilisateur
-/// <param> int $id <param> : ID de l'utilisateur
+/**
+ * Read the economy entry of a specific user.
+ *
+ * @param int $id User ID.
+ *
+ * @return array|null Economy entry or null if not found.
+ */
 function readOneEconomy(int $id)
 {
     $sql = "SELECT idEconomy, " . USER_TABLE_ID . ", monthlyLimit, spendAim, BaseMoney 
@@ -169,12 +208,16 @@ function readOneEconomy(int $id)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
-///
-/// Modifier une économie dédiée à un utilisateur
-/// <param> string $monthlyLimit    <param>
-/// <param> string $spendAim        <param>
-/// <param> string $BaseMoney       <param>
-/// <param> int    $id              <param>
+/**
+ * Update the economy entry of a specific user.
+ *
+ * @param string $monthlyLimit Monthly limit.
+ * @param string $spendAim     Spending goal.
+ * @param string $BaseMoney    Starting amount of money.
+ * @param int    $id           User ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function updateEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney, int $id)
 {
     $sql = "UPDATE economy SET monthlyLimit = :arg2, spendAim = :arg3, BaseMoney = :arg4 WHERE " . USER_TABLE_ID . " = :arg1";
@@ -188,14 +231,17 @@ function updateEconomy(string $monthlyLimit, string $spendAim, string $BaseMoney
     return $statement ? true : false;
 }
 
-
-///
-/// Modifier l'argent d'une économie d'un utlisateur spécifique
-/// <param> string $BaseMoney       <param>
-/// <param> int    $id              <param>
+/**
+ * Update the base money of a specific user's economy.
+ *
+ * @param string $BaseMoney Base money to update.
+ * @param int    $id        Economy ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function updateBaseMoney(string $BaseMoney, int $id)
 {
-    $sql = "UPDATE economy SET BaseMoney = :arg2 WHERE " . USER_TABLE_ID . " = :arg1";
+    $sql = "UPDATE economy SET BaseMoney = :arg2 WHERE idEconomy = :arg1";
     $params = [
         ":arg1" => $id,
         ":arg2" => $BaseMoney
@@ -204,10 +250,13 @@ function updateBaseMoney(string $BaseMoney, int $id)
     return $statement ? true : false;
 }
 
-
-///
-/// Supprimer une économie liée à un utilisateur
-/// <param> int $id <param> : ID de l'utilisateur
+/**
+ * Delete the economy of a specific user.
+ *
+ * @param int $id User ID.
+ *
+ * @return bool True on success, false otherwise.
+ */
 function deleteEconomy(int $id)
 {
     $sql = "DELETE FROM economy WHERE " . USER_TABLE_ID . " = :arg1";
@@ -218,15 +267,16 @@ function deleteEconomy(int $id)
 
 
 
+
 /* ======================================================================================================================================================================*/
 /* ==== | SPENDING | ==== */
 /* ======================================================================================================================================================================*/
 
 ///
-/// Créer une dépense dans l'économie de l'utilisateur
-/// <param> int $idEconomy          <param> : Paramètre en INT, ID de l'économie de l'utilisateur
-/// <param> int $idSpendType        <param> : Paramètre en INT, ID du type de dépense (bouffe, loisir etc.. )
-/// <param> string $amount          <param> : Paramètre en STRING, Combien on a dépensé
+/// Create a spending entry in the user's economy
+/// <param> int $idEconomy          <param>: INT parameter, ID of the user's economy
+/// <param> int $idSpendType        <param>: INT parameter, ID of the spending type (food, leisure, etc.)
+/// <param> string $amount          <param>: STRING parameter, amount spent
 function createSpending(int $idEconomy, int $idSpendType, string $amount)
 {
     $sql = "INSERT INTO spending (idEconomy, idSpendType, amount) VALUES (:arg1, :arg2, :arg3)";
@@ -239,9 +289,10 @@ function createSpending(int $idEconomy, int $idSpendType, string $amount)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+
 ///
-/// Créer une dépense dans l'économie de l'utilisateur
-/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+/// Read a specific spending entry
+/// <param> int $idSpending         <param>: INT parameter, ID of the spending
 function readOneSpending(int $idSpending)
 {
     $sql = "SELECT idSpending, idEconomy, idSpendType, amount FROM spending WHERE idSpending = :arg1";
@@ -252,9 +303,10 @@ function readOneSpending(int $idSpending)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+
 ///
-/// Créer une dépense dans l'économie de l'utilisateur
-/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
+/// Read all spending entries of a specific economy
+/// <param> int $idEconomy          <param>: INT parameter, ID of the user's economy
 function readAllSpendingOfEconomy(int $idEconomy)
 {
     $sql = "SELECT idSpending, idEconomy, idSpendType, amount FROM spending WHERE idEconomy = :arg1";
@@ -265,15 +317,16 @@ function readAllSpendingOfEconomy(int $idEconomy)
     return $statement->fetchAll(PDO::FETCH_ASSOC);
 }
 
+
 ///
-/// Mettre a jour une dépense dans l'économie d'un utilisateur spécifique
-/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
-/// <param> int $idEconomy          <param> : Paramètre en INT, ID de l'économie de l'utilisateur
-/// <param> int $idSpendType        <param> : Paramètre en INT, ID du type de dépense (bouffe, loisir etc.. )
-/// <param> string $amount          <param> : Paramètre en STRING, Combien on a dépensé
+/// Update a spending entry in the user's economy
+/// <param> int $idSpending         <param>: INT parameter, ID of the spending
+/// <param> int $idEconomy          <param>: INT parameter, ID of the user's economy
+/// <param> int $idSpendType        <param>: INT parameter, ID of the spending type (food, leisure, etc.)
+/// <param> string $amount          <param>: STRING parameter, amount spent
 function updateSpending(int $idSpending, int $idEconomy, int $idSpendType, string $amount)
 {
-    $sql = "UPDATE INTO spending SET idEconomy = :arg2, idSpendType = :arg3, amount = :arg4  WHERE idSpending = :arg1";
+    $sql = "UPDATE spending SET idEconomy = :arg2, idSpendType = :arg3, amount = :arg4  WHERE idSpending = :arg1";
     $params = [
         ":arg1" => $idSpending,
         ":arg2" => $idEconomy,
@@ -284,25 +337,31 @@ function updateSpending(int $idSpending, int $idEconomy, int $idSpendType, strin
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+
 ///
-/// Mettre a jour l'argent d'une dépense
-/// <param> int $idSpending         <param> : Paramètre en INT, ID de la dépense
-/// <param> string $amount          <param> : Paramètre en STRING, Combien on a dépensé
+/// Update the amount of a spending record
+/// <param> int $idSpending         <param>: INT parameter, ID of the spending
+/// <param> string $amount          <param>: STRING parameter, amount spent
 function updateSpendingAmount(int $idSpending, string $amount)
 {
-    $sql = "UPDATE INTO spending SET amount = :arg2  WHERE idSpending = :arg1";
+    // Prepare and execute the SQL update query
+    $sql = "UPDATE spending SET amount = :arg2 WHERE idSpending = :arg1";
     $params = [
         ":arg1" => $idSpending,
         ":arg2" => $amount
     ];
+
     $statement = DataBase::dbRun($sql, $params);
+
+    // Return the result (though UPDATE usually doesn't return data)
     return $statement->fetch(PDO::FETCH_ASSOC);
 }
 
+
 /**
- * Supprime une dépense de l'économie de l'utilisateur
- * @param int $idSpending ID de la dépense
- * @return bool True si supprimée avec succès, False sinon
+ * Deletes the expense of a user 
+ * @param int $idSpending expense ID
+ * @return bool True if deleted else false
  */
 function deleteSpending(int $idSpending): bool
 {
@@ -316,10 +375,10 @@ function deleteSpending(int $idSpending): bool
     return $statement->rowCount() > 0;
 }
 
-///
-/// Récupérer tous les types de dépenses
-/// <param> int $idSpending         
-/// <param> : Paramètre en INT, ID de la dépense
+/**
+ * Returns all the expenses types
+ * @return array
+ */
 function readAllSpendTypes()
 {
     $sql = "SELECT idSpendingType, Type FROM spendTypes";
@@ -329,7 +388,7 @@ function readAllSpendTypes()
 }
 
 /**
- * Retourne un tableau des dépense du mois selon un utilisateur
+ * Returns a user's monthly expenses
  * @param int $userId
  * @return array<float|int>
  */
@@ -381,27 +440,33 @@ function getExpensesByType(int $userId): array
 
 
 /**
- * Supprime une dépense et redonne l'argent a la balance
- * @param int $expenseId - la dépense
- * @param int $userId   - l'utilisateur
- * @return bool         - Tout est bon? ou pas du tout
+ * Deletes a user expense and refunds the deleted amount.
+ *
+ * @param int $expenseId ID of the expense to delete.
+ * @param int $userId    ID of the user who owns the expense.
+ * @return bool          True if everything went well, false otherwise.
  */
 function deleteExpense(int $expenseId, int $userId): bool
 {
     try {
-        // Check if the spending is linked to the right user
+        // Retrieve the expense information to verify ownership and get the amounts.
         $sql = "
-             SELECT sp.amount, e.BaseMoney, e.idEconomy
-             FROM spending sp
-             JOIN economy e ON sp.idEconomy = e.idEconomy
-             WHERE sp.idSpending = :arg1 AND e." . USER_TABLE_ID . " = :" . USER_TABLE_ID . "
-         ";
-        $params = [':arg1' => $expenseId, ":" . USER_TABLE_ID => $userId];
-        $checkStmt = DataBase::dbRun($sql, $params);
-        $expense = $checkStmt->fetch(PDO::FETCH_ASSOC);
+            SELECT sp.amount, e.BaseMoney, e.idEconomy
+            FROM spending sp
+            INNER JOIN economy e ON sp.idEconomy = e.idEconomy
+            WHERE sp.idSpending = :arg1 AND e." . USER_TABLE_ID . " = :arg2
+        ";
+        $params = [
+            ':arg1' => $expenseId,
+            ':arg2' => $userId
+        ];
 
+        $stmt = DataBase::dbRun($sql, $params);
+        $expense = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // If the expense was not found or doesn't belong to the user
         if (!$expense) {
-            error_log("Tentative de suppression non autorisée pour l'ID de dépense : $expenseId par l'utilisateur : $userId");
+            error_log("Suppression refusée : dépense $expenseId non trouvée ou n'appartient pas à l'utilisateur $userId.");
             return false;
         }
 
@@ -409,87 +474,24 @@ function deleteExpense(int $expenseId, int $userId): bool
         $currentBalance = (float) $expense['BaseMoney'];
         $economyId = (int) $expense['idEconomy'];
 
-        // Delete the spending
-        deleteSpending($expenseId);
+        // Attempt to delete the expense
+        if (!deleteSpending($expenseId)) {
+            error_log("Échec de la suppression de la dépense ID : $expenseId");
+            return false;
+        }
 
-        // Add the money spent back to the balance
+        // Refund the deleted amount back to the user's balance
         $newBalance = $currentBalance + $amount;
-        updateBaseMoney($newBalance, $economyId);
+        if (!updateBaseMoney($newBalance, $economyId)) {
+            error_log("Échec de la mise à jour du solde pour idEconomy : $economyId");
+            return false;
+        }
 
         return true;
     } catch (Throwable $e) {
-        error_log("Erreur lors de la suppression de la dépense : " . $e->getMessage());
+        error_log("Exception dans deleteExpense : " . $e->getMessage());
         return false;
     }
 }
 
-if (isset($_POST['action']) && $_POST['action'] === 'deleteExpense') {
-    session_start();
-    $user = checkIfUnlogged(OUTSIDE_TO_INDEX_PATH);
 
-    $expenseId = filter_input(INPUT_POST, 'expenseId', FILTER_VALIDATE_INT);
-    error_log("Reçu pour suppression : expenseId = $expenseId");
-
-    if ($expenseId && deleteExpense($expenseId, $user[USER_TABLE_ID])) {
-        echo json_encode(['success' => true]);
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Impossible de supprimer la dépense.']);
-    }
-    exit();
-}
-
-if (isset($_POST['action']) && $_POST['action'] === 'updateExpense') {
-    session_start();
-    $user = checkIfUnlogged(OUTSIDE_TO_INDEX_PATH);
-
-    $expenseId = filter_input(INPUT_POST, 'expenseId', FILTER_VALIDATE_INT);
-    $newAmount = filter_input(INPUT_POST, 'newAmount', FILTER_VALIDATE_FLOAT);
-
-    if ($expenseId && $newAmount && $newAmount > 0) {
-        try {
-            $db = DataBase::db();
-
-            // Vérifiez si la dépense appartient à l'utilisateur
-            $sql = "
-                 SELECT sp.amount, e.BaseMoney, e.idEconomy
-                 FROM spending sp
-                 JOIN economy e ON sp.idEconomy = e.idEconomy
-                 WHERE sp.idSpending = :arg1 AND e." . USER_TABLE_ID . " = :" . USER_TABLE_ID . "
-             ";
-            $params = [':arg1' => $expenseId, ":" . USER_TABLE_ID => $user[USER_TABLE_ID]];
-            $stmt = DataBase::dbRun($sql, $params);
-            $expense = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$expense) {
-                echo json_encode(['success' => false, 'error' => 'Dépense non trouvée ou non autorisée.']);
-                exit();
-            }
-
-            $currentAmount = (float) $expense['amount'];
-            $currentBalance = (float) $expense['BaseMoney'];
-            $economyId = (int) $expense['idEconomy'];
-
-            // Calculez le nouveau solde
-            $newBalance = $currentBalance + $currentAmount - $newAmount;
-
-            // Vérifiez si le nouveau solde est négatif
-            if ($newBalance < 0) {
-                echo json_encode(['success' => false, 'error' => 'Solde insuffisant pour cette modification.']);
-                exit();
-            }
-
-            // Mettre à jour la dépense
-            updateSpendingAmount($newAexpenseIdmount, $newAmount);
-
-            // Mettre à jour le solde
-            updateBaseMoney($newBalance, $economyId);
-
-            echo json_encode(['success' => true]);
-        } catch (Throwable $e) {
-            echo json_encode(['success' => false, 'error' => 'Erreur serveur.']);
-        }
-    } else {
-        echo json_encode(['success' => false, 'error' => 'Données invalides.']);
-    }
-    exit();
-}

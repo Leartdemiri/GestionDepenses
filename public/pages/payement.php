@@ -5,13 +5,13 @@ session_start();
 require_once '../../src/logger.php';
 $logger = getLogger();
 
-// Vérification de l'utilisateur connecté
+// Check the logged-in user
 $user = checkIfUnlogged("../index.php");
 
-// Récupération des types de dépenses
+// Retrieve expense types
 $SpendTypes = readAllSpendTypes();
 
-// Récupération des données économiques de l'utilisateur
+// Retrieve the user's economic data
 $economy = readOneEconomy($user[USER_TABLE_ID]);
 if (!$economy) {
     try {
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $spendType = filter_input(INPUT_POST, 'spendType', FILTER_VALIDATE_INT);
     try {
         if (!$actionType || $amount === null || $amount <= 0) {
-            throw new Exception("Données invalides. Veuillez remplir tous les champs correctement.");
+            throw new Exception("Invalid data. Please fill all fields correctly.");
         }
 
         $oldBalance = $currentBalance;
@@ -43,22 +43,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($actionType === 'addExpense' && $spendType) {
             $newBalance = $oldBalance - $amount;
             if ($newBalance < 0) {
-                throw new Exception("Solde insuffisant pour effectuer cette dépense.");
+                throw new Exception("Insufficient balance to make this expense.");
             }
             createSpending($economy['idEconomy'], $spendType, $amount);
-            $logger->info("Dépense ajoutée", [
+            $logger->info("Expense added", [
                 'userId' => $user[USER_TABLE_ID],
                 'spendType' => $spendType,
                 'amount' => $amount
             ]);
         } elseif ($actionType === 'addMoney') {
             $newBalance = $oldBalance + $amount;
-            $logger->info("Argent ajouté", [
+            $logger->info("Money added", [
                 'userId' => $user[USER_TABLE_ID],
                 'amount' => $amount
             ]);
         } else {
-            throw new Exception("Type d'action invalide ou type de dépense manquant.");
+            throw new Exception("Invalid action type or missing expense type.");
         }
 
         updateEconomy(
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         DataBase::commit();
-        $logger->info("Économie mise à jour", [
+        $logger->info("Economy updated", [
             'userId' => $user[USER_TABLE_ID],
             'oldBalance' => $oldBalance,
             'newBalance' => $newBalance
@@ -78,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     } catch (Throwable $e) {
         DataBase::rollback();
-        $logger->error("Erreur lors de la mise à jour du solde", [
+        $logger->error("Error updating balance", [
             'userId' => $user[USER_TABLE_ID],
             'oldBalance' => $currentBalance,
             'amount' => $amount ?? null,
@@ -88,9 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: payement.php?error=" . urlencode($e->getMessage()));
         exit();
     }
-
-
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">

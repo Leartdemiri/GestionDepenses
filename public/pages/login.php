@@ -5,9 +5,7 @@ require_once "../../src/functions.php";
 header("Access-Control-Allow-Origin: *");
 
 
-
-
-// --- Gestion connexion Google ---
+// --- Google Sign-in Handling ---
 if (isset($_POST['google_credential'])) {
     $token = $_POST['google_credential'];
     $client_id = '139570543794-sf77h7hiah3l8q3l2m0u8r2r29ftu3a7.apps.googleusercontent.com';
@@ -33,13 +31,13 @@ if (isset($_POST['google_credential'])) {
     }
 }
 
-//Security -- On est bien en POST?
+// Security -- Are we using POST method?
 checkMethod(OUTSIDE_TO_INDEX_PATH);
 
-// Security -- Est-ce que on est déja loggé?
+// Security -- Are we already logged in?
 checkIfLogged("home/");
 
-// Security -- Est-ce que on a recu les bonnes données?
+// Security -- Did we receive the correct data?
 $requiredFields = ['email', 'password'];
 checkPOSTFields($requiredFields);
 
@@ -47,7 +45,7 @@ $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
 $password = $_POST["password"];
 
 
-// Vérifier si l'utilisateur existe
+// Check if the user exists
 $user = checkIfUserExist($email);
 if (!$user) {
     http_response_code(HTTP_STATUS_BAD_REQUEST);
@@ -62,19 +60,19 @@ if (!$user) {
 }
 
 try {
-    // Générer un nouveau token pour la session
+    // Generate a new token for the session
     $token = createToken();
     updateUserToken($user[USER_TABLE_ID], $token);
 
-    // Démarrer une session et stocker le token
+    // Start a session and store the token
     session_start();
     $_SESSION[SESSION_TOKEN_KEY] = $token;
 
-    // Rediriger vers la page d'accueil
+    // Redirect to the homepage
     http_response_code(HTTP_STATUS_OK);
     header("Location: ./home/");
 } catch (Throwable $th) {
     http_response_code(HTTP_STATUS_INTERNAL_SERVER_ERROR);
     header("Location: ." . OUTSIDE_TO_INDEX_PATH . "?" . ERROR_GET_KEY . "=login_failed");
-    die("Erreur lors de la connexion.");
+    die("Error during login.");
 }

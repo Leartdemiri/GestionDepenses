@@ -140,7 +140,7 @@ async function loadStats() {
                 deleteButton.addEventListener("click", async () => {
                     if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
                         try {
-                            const response = await fetch("../../src/functions.php", {
+                            const response = await fetch("../../src/paymentsForm.php", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/x-www-form-urlencoded"
@@ -191,7 +191,7 @@ async function loadStats() {
 
 async function updateExpense(expenseId, newAmount) {
     try {
-        const response = await fetch("../../php/functions.php", {
+        const response = await fetch("../../src/paymentsForm.php", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -293,7 +293,7 @@ async function loadCategoryExpensesOnly() {
                 deleteButton.addEventListener("click", async () => {
                     if (confirm("Êtes-vous sûr de vouloir supprimer cette dépense ?")) {
                         try {
-                            const response = await fetch("../../php/functions.php", {
+                            const response = await fetch("../../src/paymentsForm.php", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/x-www-form-urlencoded"
@@ -325,11 +325,11 @@ async function loadCategoryExpensesOnly() {
                 row.appendChild(typeCell);
                 row.appendChild(amountCell);
                 row.appendChild(dateCell);
-/**
- * Summary of getMonthlyExpenses
- * @param int $userId
- * @return array<float|int>
- */
+                /**
+                 * Summary of getMonthlyExpenses
+                 * @param int $userId
+                 * @return array<float|int>
+                 */
                 row.appendChild(deleteCell);
                 tbody.appendChild(row);
             });

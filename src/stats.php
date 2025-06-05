@@ -2,11 +2,17 @@
 session_start();
 require_once "database.php";
 
-// Toujours déclarer le type de contenu JSON
+// Always declare JSON content type for a REST API
 header('Content-Type: application/json');
 
-// === FONCTIONS ===
+// === UTILITY FUNCTIONS FOR THE DATABASE ===
 
+/**
+ * Retrieves user information based on their token.
+ *
+ * @param string $token Session token
+ * @return array|null User data or null if not found or on error
+ */
 function getUserByToken(string $token): ?array
 {
     try {
@@ -14,11 +20,17 @@ function getUserByToken(string $token): ?array
         $stmt = DataBase::dbRun($sql, [':token' => $token]);
         return $stmt->fetch(PDO::FETCH_ASSOC) ?: null;
     } catch (Throwable $e) {
-        error_log("Erreur getUserByToken : " . $e->getMessage());
+        error_log("Error in getUserByToken: " . $e->getMessage());
         return null;
     }
 }
 
+/**
+ * Retrieves total monthly expenses of the user over the year.
+ *
+ * @param int $userId User ID
+ * @return array An array with 12 entries (one per month), containing totals
+ */
 function getMonthlyExpenses(int $userId): array
 {
     try {
@@ -26,12 +38,13 @@ function getMonthlyExpenses(int $userId): array
             SELECT MONTH(sp.dateCreated) AS month, SUM(sp.amount) AS total
             FROM spending sp
             JOIN economy e ON sp.idEconomy = e.idEconomy
-            WHERE e.".USER_TABLE_ID." = :arg1
+            WHERE e." . USER_TABLE_ID . " = :arg1
             GROUP BY MONTH(sp.dateCreated)
             ORDER BY MONTH(sp.dateCreated)
         ";
         $stmt = DataBase::dbRun($sql, [':arg1' => $userId]);
 
+        // Initialize 12 months to 0
         $monthly = array_fill(1, 12, 0);
         foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
             $mois = (int) $row['month'];
@@ -43,11 +56,17 @@ function getMonthlyExpenses(int $userId): array
 
         return array_values($monthly);
     } catch (Throwable $e) {
-        error_log("Erreur getMonthlyExpenses : " . $e->getMessage());
-        return array_fill(0, 12, 0); // renvoie 12 mois à 0 en cas d’erreur
+        error_log("Error in getMonthlyExpenses: " . $e->getMessage());
+        return array_fill(0, 12, 0); // Return 12 months with 0 on error
     }
 }
 
+/**
+ * Calculates the total expenses grouped by type (e.g., Food, Transport, etc.).
+ *
+ * @param int $userId User ID
+ * @return array List of expense types with their totals
+ */
 function getExpensesByType(int $userId): array
 {
     try {
@@ -56,18 +75,25 @@ function getExpensesByType(int $userId): array
             FROM spending sp
             JOIN spendTypes st ON sp.idSpendType = st.idSpendingType
             JOIN economy e ON sp.idEconomy = e.idEconomy
-            WHERE e.".USER_TABLE_ID." = :userId
+            WHERE e." . USER_TABLE_ID . " = :userId
             GROUP BY st.Type
             ORDER BY total DESC
         ";
         $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Throwable $e) {
-        error_log("Erreur getExpensesByType : " . $e->getMessage());
+        error_log("Error in getExpensesByType: " . $e->getMessage());
         return [];
     }
 }
 
+/**
+ * Retrieves the user's latest expenses (default last 10).
+ *
+ * @param int $userId User ID
+ * @param int $limit Number of rows to return (default 10)
+ * @return array List of recent expenses
+ */
 function getLatestExpenses(int $userId, int $limit = 10): array
 {
     $sql = "
@@ -80,48 +106,49 @@ function getLatestExpenses(int $userId, int $limit = 10): array
         FROM spending sp
         JOIN spendTypes st ON sp.idSpendType = st.idSpendingType
         JOIN economy e ON sp.idEconomy = e.idEconomy
-        JOIN user u ON e.".USER_TABLE_ID." = u.".USER_TABLE_ID."
-        WHERE e.".USER_TABLE_ID." = :userId
+        JOIN user u ON e." . USER_TABLE_ID . " = u." . USER_TABLE_ID . "
+        WHERE e." . USER_TABLE_ID . " = :userId
         ORDER BY sp.dateCreated DESC
         LIMIT :limit
     ";
 
+    // Avoid PDO::bindValue with LIMIT (manual replacement)
     $sql = str_replace(':limit', (int) $limit, $sql);
 
     $stmt = DataBase::dbRun($sql, [':userId' => $userId]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-
-
-// === AUTHENTIFICATION ===
+// === SESSION AUTHENTICATION ===
 
 if (!isset($_SESSION['token'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Non autorisé']);
+    http_response_code(401); // Unauthorized
+    echo json_encode(['error' => 'Unauthorized']);
     exit;
 }
 
 $user = getUserByToken($_SESSION['token']);
 if (!$user) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Utilisateur invalide']);
+    http_response_code(403); // Forbidden
+    echo json_encode(['error' => 'Invalid user']);
     exit;
 }
 
-// === RÉPONSE JSON ===
+// === CONSTRUCTING THE JSON RESPONSE ===
 
 try {
     $userId = (int) $user[USER_TABLE_ID];
+
     $response = [
-        'monthlyExpenses' => getMonthlyExpenses($userId),
-        'expenseTypes' => getExpensesByType($userId),
-        'latestExpenses' => getLatestExpenses($userId)
+        'monthlyExpenses' => getMonthlyExpenses($userId), // Data for monthly charts
+        'expenseTypes'    => getExpensesByType($userId),  // Data for pie charts (types)
+        'latestExpenses'  => getLatestExpenses($userId)   // List of latest expenses
     ];
+
     echo json_encode($response, JSON_THROW_ON_ERROR);
 } catch (Throwable $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Erreur serveur']);
-    error_log("Erreur JSON : " . $e->getMessage());
+    echo json_encode(['error' => 'Server error']);
+    error_log("JSON error: " . $e->getMessage());
     exit;
 }
